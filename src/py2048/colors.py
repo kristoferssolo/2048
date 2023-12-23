@@ -236,3 +236,6 @@ class TokyoNightStorm:
     TERMINAL_BLACK = "#414868"
     WARNING = "#E0AF68"
     YELLOW = "#E0AF68"
+
+
+COLORS = TokyoNightNight
