@@ -23,5 +23,8 @@ class Block(pygame.sprite.Sprite):
         self.image.blit(text, text_rect)
 
     def move(self, dx: int, dy: int) -> None:
-        self.rect.x += dx
-        self.rect.y += dy
+        new_x = self.rect.x + dx
+        new_y = self.rect.y + dy
+        if 0 <= new_x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= new_y <= Config.HEIGHT - Config.BLOCK_SIZE:
+            self.rect.x = new_x
+            self.rect.y = new_y
