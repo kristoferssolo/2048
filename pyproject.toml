@@ -1,0 +1,31 @@
+[project]
+name = "2048"
+version = "0.1.0"
+description = "2048 game with AI"
+authors = [{ name = "Kristofers Solo", email = "dev@kristofers.xyz" }]
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "GPLv3" }
+dependencies = []
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_any_generics = true
+ignore_missing_imports = true
+no_implicit_optional = true
+no_implicit_reexport = true
+show_error_codes = true
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+
+[tool.ruff]
+line-length = 160
+
+[tool.black]
+line-length = 160
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
