@@ -21,3 +21,7 @@ class Block(pygame.sprite.Sprite):
         text = font.render(str(self.value), True, COLORS.FG)
         text_rect = text.get_rect(center=self.image.get_rect().center)
         self.image.blit(text, text_rect)
+
+    def move(self, dx: int, dy: int) -> None:
+        self.rect.x += dx
+        self.rect.y += dy
