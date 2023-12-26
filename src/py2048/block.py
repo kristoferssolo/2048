@@ -28,3 +28,37 @@ class Block(pygame.sprite.Sprite):
         if 0 <= new_x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= new_y <= Config.HEIGHT - Config.BLOCK_SIZE:
             self.rect.x = new_x
             self.rect.y = new_y
+
+    def increase_value(self, num: int = 2) -> None:
+        """Increase the value of the block `num` times"""
+        self.value *= num
+        self.update()
+
+    def update(self) -> None:
+        self.change_color()
+        self.draw_value()
+
+    def change_color(self) -> None:
+        match self.value:
+            case 2:
+                self.image.fill(COLORS.BLUE)
+            case 4:
+                self.image.fill(COLORS.BLUE0)
+            case 8:
+                self.image.fill(COLORS.BLUE1)
+            case 16:
+                self.image.fill(COLORS.BLUE2)
+            case 32:
+                self.image.fill(COLORS.DARK3)
+            case 64:
+                self.image.fill(COLORS.BORDER_HIGHLIGHT)
+            case 128:
+                self.image.fill(COLORS.BLUE5)
+            case 256:
+                self.image.fill(COLORS.BLUE6)
+            case 512:
+                self.image.fill(COLORS.BLUE7)
+            case 1024:
+                self.image.fill(COLORS.ORANGE)
+            case 2048:
+                self.image.fill(COLORS.RED)

@@ -46,9 +46,20 @@ class Game:
                 elif event.key == pygame.K_q:
                     self.exit()
 
-    def move_blocks(self, dx, dy) -> None:
+    def move_blocks(self, dx: int, dy: int) -> None:
+        moved_blocks = pygame.sprite.Group()
         for block in self.sprites:
             block.move(dx, dy)
+
+        for block in self.sprites:  # FIX: different value block merge
+            collidin_blocks = pygame.sprite.spritecollide(block, self.sprites, False)
+
+            for other_block in collidin_blocks:
+                if block != other_block and block.value == other_block.value and other_block not in moved_blocks:
+                    block.increase_value()
+                    self.sprites.remove(other_block)
+                    moved_blocks.add(block)
+        self.update()
 
     def generate_random_block(self, count: int) -> None:
         for _ in range(count):
