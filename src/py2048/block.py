@@ -13,7 +13,7 @@ class Block(pygame.sprite.Sprite):
         self.image.fill(COLORS.ERROR)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-        self.value = 2 if random.random() <= Config.BLOCK_VALUE_PROBABILITY else 4
+        self.value: int = 2 if random.random() <= Config.BLOCK_VALUE_PROBABILITY else 4
         self.draw_value()
 
     def draw_value(self) -> None:

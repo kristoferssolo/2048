@@ -11,7 +11,7 @@ from .config import Config
 class Game:
     def __init__(self) -> None:
         pygame.init()
-        self.screen = pygame.display.set_mode((Config.WIDTH, Config.HEIGHT))
+        self.screen: pygame.Surface = pygame.display.set_mode((Config.WIDTH, Config.HEIGHT))
         pygame.display.set_caption("2048")
         self.sprites = pygame.sprite.Group()
         self.generate_random_block(Config.INITIAL_BLOCK_COUNT)
@@ -47,7 +47,8 @@ class Game:
                     self.exit()
 
     def move_blocks(self, dx: int, dy: int) -> None:
-        moved_blocks = pygame.sprite.Group()
+        moved_blocks = pygame.sprite.Group()  # Keep track of moved blocks to avoid double merging
+
         for block in self.sprites:
             block.move(dx, dy)
 
@@ -59,7 +60,6 @@ class Game:
                     block.increase_value()
                     self.sprites.remove(other_block)
                     moved_blocks.add(block)
-        self.update()
         self.generate_random_block()
 
     def generate_random_block(self, count: int = 1) -> None:
