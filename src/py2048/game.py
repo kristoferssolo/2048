@@ -60,8 +60,9 @@ class Game:
                     self.sprites.remove(other_block)
                     moved_blocks.add(block)
         self.update()
+        self.generate_random_block()
 
-    def generate_random_block(self, count: int) -> None:
+    def generate_random_block(self, count: int = 1) -> None:
         for _ in range(count):
             while True:
                 x = random.randint(0, 2) * Config.BLOCK_SIZE  # random column position
