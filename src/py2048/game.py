@@ -2,14 +2,19 @@ import random
 import sys
 
 import pygame
+from loguru import logger
 
 from .block import Block
 from .colors import COLORS
 from .config import Config
+from .logger import setup_logger
 
 
 class Game:
     def __init__(self) -> None:
+        setup_logger()
+        logger.info("Initializing game")
+
         pygame.init()
         self.screen: pygame.Surface = pygame.display.set_mode((Config.WIDTH, Config.HEIGHT))
         pygame.display.set_caption("2048")
