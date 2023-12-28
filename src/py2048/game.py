@@ -19,26 +19,26 @@ class Game:
         self.screen: pygame.Surface = pygame.display.set_mode((Config.WIDTH, Config.HEIGHT))
         pygame.display.set_caption("2048")
         self.sprites = pygame.sprite.Group()
-        self.generate_random_block(Config.INITIAL_BLOCK_COUNT)
+        self._generate_random_block(Config.INITIAL_BLOCK_COUNT)
 
     def run(self) -> None:
         """Run the game loop."""
         while True:
-            self.hande_events()
-            self.update()
-            self.render()
+            self._hande_events()
+            self._update()
+            self._render()
 
-    def update(self) -> None:
+    def _update(self) -> None:
         """Update the game."""
         self.sprites.update()
 
-    def render(self) -> None:
+    def _render(self) -> None:
         """Render the game."""
         self.screen.fill(COLORS.BG)
         self.sprites.draw(self.screen)
         pygame.display.flip()
 
-    def hande_events(self) -> None:
+    def _hande_events(self) -> None:
         """Handle pygame events."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -90,9 +90,9 @@ class Game:
                     block.increase_value()
                     self.sprites.remove(other_block)
                     moved_blocks.add(block)
-        self.generate_random_block()
+        self._generate_random_block()
 
-    def generate_random_block(self, count: int = 1) -> None:
+    def _generate_random_block(self, count: int = 1) -> None:
         """Generate `count` number of random blocks."""
         for _ in range(count):
             while True:

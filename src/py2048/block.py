@@ -17,14 +17,14 @@ class Block(pygame.sprite.Sprite):
         self.font = pygame.font.SysFont(Config.FONT_FAMILY, Config.FONT_SIZE)
         self.update()
 
-    def draw_value(self) -> None:
+    def _draw_value(self) -> None:
         """Draw the value of the block"""
         text = self.font.render(str(self.value), True, COLORS.FG)
         text_rect = text.get_rect(center=self.image.get_rect().center)
         self.image.blit(text, text_rect)
 
     def move(self, dx: int, dy: int) -> None:
-        """Move the block by `dx` and `dy`"""
+        """Move the block by `dx` and `dy`."""
         new_x = self.rect.x + dx
         new_y = self.rect.y + dy
         if 0 <= new_x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= new_y <= Config.HEIGHT - Config.BLOCK_SIZE:
@@ -38,10 +38,10 @@ class Block(pygame.sprite.Sprite):
 
     def update(self) -> None:
         """Update the block"""
-        self.change_color()
-        self.draw_value()
+        self._change_color()
+        self._draw_value()
 
-    def change_color(self) -> None:
+    def _change_color(self) -> None:
         """Change the color of the block based on its value"""
         color_map = {
             2: COLORS.BLUE,
