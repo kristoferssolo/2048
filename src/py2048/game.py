@@ -104,6 +104,7 @@ class Game:
 
                 if not colliding_blocks:
                     self.sprites.add(block)
+                    logger.debug(f"Generated block({id(block)}) at ({x}, {y})")
                     break
 
     def exit(self) -> None:

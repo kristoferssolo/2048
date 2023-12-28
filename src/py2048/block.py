@@ -1,6 +1,7 @@
 import random
 
 import pygame
+from loguru import logger
 
 from .colors import COLORS
 from .config import Config
@@ -28,13 +29,11 @@ class Block(pygame.sprite.Sprite):
         new_x = self.rect.x + dx
         new_y = self.rect.y + dy
         if 0 <= new_x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= new_y <= Config.HEIGHT - Config.BLOCK_SIZE:
+            logger.debug(f"Moving block({id(self)}): ({self.rect.x}, {self.rect.y}) => ({new_x}, {new_y})")
             self.rect.x = new_x
             self.rect.y = new_y
-
-    def increase_value(self, num: int = 2) -> None:
-        """Increase the value of the block `num` times"""
-        self.value *= num
-        self.update()
+        else:
+            logger.debug("Move blocked: out of bounds")
 
     def update(self) -> None:
         """Update the block"""
