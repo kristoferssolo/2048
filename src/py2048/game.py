@@ -17,20 +17,24 @@ class Game:
         self.generate_random_block(Config.INITIAL_BLOCK_COUNT)
 
     def run(self) -> None:
+        """Run the game loop."""
         while True:
             self.hande_events()
             self.update()
             self.render()
 
     def update(self) -> None:
+        """Update the game."""
         self.sprites.update()
 
     def render(self) -> None:
+        """Render the game."""
         self.screen.fill(COLORS.BG)
         self.sprites.draw(self.screen)
         pygame.display.flip()
 
     def hande_events(self) -> None:
+        """Handle pygame events."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.exit()
@@ -47,6 +51,7 @@ class Game:
                     self.exit()
 
     def move_blocks(self, dx: int, dy: int) -> None:
+        """Move all the blocks by `dx` and `dy`."""
         moved_blocks = pygame.sprite.Group()  # Keep track of moved blocks to avoid double merging
 
         for block in self.sprites:
@@ -63,18 +68,20 @@ class Game:
         self.generate_random_block()
 
     def generate_random_block(self, count: int = 1) -> None:
+        """Generate `count` number of random blocks."""
         for _ in range(count):
             while True:
                 x = random.randint(0, 2) * Config.BLOCK_SIZE  # random column position
                 y = random.randint(0, 2) * Config.BLOCK_SIZE  # random row position
                 block = Block(x, y)
 
-                colligin_blocks = pygame.sprite.spritecollide(block, self.sprites, False)  # check collision
+                colliding_blocks = pygame.sprite.spritecollide(block, self.sprites, False)  # check collision
 
-                if not colligin_blocks:
+                if not colliding_blocks:
                     self.sprites.add(block)
                     break
 
     def exit(self) -> None:
+        """Exit the game."""
         pygame.quit()
         sys.exit()
