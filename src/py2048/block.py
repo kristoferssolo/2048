@@ -57,19 +57,15 @@ class Block(pygame.sprite.Sprite):
         }
         self.image.fill(color_map.get(self.value, COLORS.ERROR))
 
-    def __add__(self, other: "Block") -> "Block":
-        """Add the value of two blocks and return a new block"""
-        new_block = Block(self.rect.x, self.rect.y)
-        new_block.value = self.value + other.value
-        return new_block
+    def __add__(self, other: "Block") -> None:
+        """Add the value of two blocks and update the current block"""
+        self.value += other.value
+        self.update()
 
-    def __iadd__(self, other: "Block") -> "Block":
-        """Add the value of two blocks and return a new block"""
-        return self + other
-
-    def __eq__(self, other: "Block") -> bool:
-        """Check if two block values are equal"""
-        return self.value == other.value
+    def __iadd__(self, other: "Block") -> None:
+        """Add the value of two blocks and updae the current block"""
+        self.value += other.value
+        self.update()
 
     def __repr__(self) -> str:
         """Return a string representation of the block"""
@@ -77,7 +73,7 @@ class Block(pygame.sprite.Sprite):
 
     def __str__(self) -> str:
         """Return a string representation of the block"""
-        self.__repr__()
+        return self.__repr__()
 
     def __hash__(self) -> int:
         """Return a hash of the block"""
