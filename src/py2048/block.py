@@ -7,13 +7,13 @@ from .config import Config
 
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, x: int, y: int):
+    def __init__(self, x: int, y: int, value: int | None = 2):
         """Initialize a block"""
         super().__init__()
         self.image = pygame.Surface((Config.BLOCK_SIZE, Config.BLOCK_SIZE))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
-        self.value: int = 2 if random.random() <= Config.BLOCK_VALUE_PROBABILITY else 4
+        self.value: int = value if value is not None else 2 if random.random() <= Config.BLOCK_VALUE_PROBABILITY else 4
         self.font = pygame.font.SysFont(Config.FONT_FAMILY, Config.FONT_SIZE)
         self.update()
 
