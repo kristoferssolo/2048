@@ -45,17 +45,37 @@ class Game:
                 self.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key in (pygame.K_LEFT, pygame.K_a, pygame.K_h):
-                    self.move_blocks(-Config.BLOCK_SIZE, 0)
+                    self.move_left()
                 elif event.key in (pygame.K_RIGHT, pygame.K_d, pygame.K_l):
-                    self.move_blocks(Config.BLOCK_SIZE, 0)
+                    self.move_right()
                 elif event.key in (pygame.K_UP, pygame.K_w, pygame.K_k):
-                    self.move_blocks(0, -Config.BLOCK_SIZE)
+                    self.move_up()
                 elif event.key in (pygame.K_DOWN, pygame.K_s, pygame.K_j):
-                    self.move_blocks(0, Config.BLOCK_SIZE)
+                    self.move_down()
                 elif event.key == pygame.K_q:
                     self.exit()
 
-    def move_blocks(self, dx: int, dy: int) -> None:
+    def move_up(self) -> None:
+        """Move all blocks up"""
+        logger.debug("Move up")
+        self._move_blocks(0, -Config.BLOCK_SIZE)
+
+    def move_down(self) -> None:
+        """Move all blocks down"""
+        logger.debug("Move down")
+        self._move_blocks(0, Config.BLOCK_SIZE)
+
+    def move_left(self) -> None:
+        """Move all blocks left"""
+        logger.debug("Move left")
+        self._move_blocks(-Config.BLOCK_SIZE, 0)
+
+    def move_right(self) -> None:
+        """Move all blocks right"""
+        logger.debug("Move right")
+        self._move_blocks(Config.BLOCK_SIZE, 0)
+
+    def _move_blocks(self, dx: int, dy: int) -> None:
         """Move all the blocks by `dx` and `dy`."""
         moved_blocks = pygame.sprite.Group()  # Keep track of moved blocks to avoid double merging
 
