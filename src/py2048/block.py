@@ -6,6 +6,8 @@ from loguru import logger
 from .colors import COLORS
 from .config import Config
 
+from .utils import Direction
+
 
 def _show_pos(pos: int) -> int:
     """Return the position in the grid."""
@@ -32,10 +34,13 @@ class Block(pygame.sprite.Sprite):
         text_rect = text.get_rect(center=self.image.get_rect().center)
         self.image.blit(text, text_rect)
 
-    def move(self, dx: int, dy: int) -> None:
+    def move(self, direction: Direction) -> None:
         """Move the block by `dx` and `dy`."""
-        new_x = self.rect.x + dx
-        new_y = self.rect.y + dy
+        dx, dy = direction.value
+
+        new_x = self.rect.x + dx * Config.BLOCK_SIZE
+        new_y = self.rect.y + dy * Config.BLOCK_SIZE
+
         if 0 <= new_x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= new_y <= Config.HEIGHT - Config.BLOCK_SIZE:
             logger.debug(f"Moving block({id(self)}): {self} => ({_show_pos(new_x)}, {_show_pos(new_y)})")
             self.rect.x = new_x
