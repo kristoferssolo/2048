@@ -7,6 +7,11 @@ from .colors import COLORS
 from .config import Config
 
 
+def _show_pos(pos: int) -> int:
+    """Return the position in the grid."""
+    return pos // Config.BLOCK_SIZE + 1
+
+
 class Block(pygame.sprite.Sprite):
     def __init__(self, x: int, y: int, value: int | None = 2):
         """Initialize a block"""
@@ -14,6 +19,9 @@ class Block(pygame.sprite.Sprite):
         self.image = pygame.Surface((Config.BLOCK_SIZE, Config.BLOCK_SIZE))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+
+        logger.debug(f"Generated block({id(self)}) at {self}")
+
         self.value: int = value if value is not None else 2 if random.random() <= Config.BLOCK_VALUE_PROBABILITY else 4
         self.font = pygame.font.SysFont(Config.FONT_FAMILY, Config.FONT_SIZE)
         self.update()
@@ -29,11 +37,9 @@ class Block(pygame.sprite.Sprite):
         new_x = self.rect.x + dx
         new_y = self.rect.y + dy
         if 0 <= new_x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= new_y <= Config.HEIGHT - Config.BLOCK_SIZE:
-            logger.debug(f"Moving block({id(self)}): ({self.rect.x}, {self.rect.y}) => ({new_x}, {new_y})")
+            logger.debug(f"Moving block({id(self)}): {self} => ({_show_pos(new_x)}, {_show_pos(new_y)})")
             self.rect.x = new_x
             self.rect.y = new_y
-        else:
-            logger.debug("Move blocked: out of bounds")
 
     def update(self) -> None:
         """Update the block"""
@@ -59,17 +65,19 @@ class Block(pygame.sprite.Sprite):
 
     def __add__(self, other: "Block") -> None:
         """Add the value of two blocks and update the current block"""
+        logger.debug(f"Merging blocks ({id(self)}) and ({id(other)}) => ({id(self)}), {self}")
         self.value += other.value
         self.update()
 
     def __iadd__(self, other: "Block") -> None:
         """Add the value of two blocks and updae the current block"""
+        logger.debug(f"Merging blocks ({id(self)}) and ({id(other)}) => ({id(self)}), {self}")
         self.value += other.value
         self.update()
 
     def __repr__(self) -> str:
         """Return a string representation of the block"""
-        return f"Block({self.rect.x}, {self.rect.y})"
+        return f"({_show_pos(self.rect.x)}, {_show_pos(self.rect.y)})"
 
     def __str__(self) -> str:
         """Return a string representation of the block"""

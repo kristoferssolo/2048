@@ -78,18 +78,23 @@ class Game:
     def _move_blocks(self, dx: int, dy: int) -> None:
         """Move all the blocks by `dx` and `dy`."""
         moved_blocks = pygame.sprite.Group()  # Keep track of moved blocks to avoid double merging
+        blocks_to_remove = []
 
         for block in self.sprites:
             block.move(dx, dy)
 
-        for block in self.sprites:  # FIX: different value block merge
-            collidin_blocks = pygame.sprite.spritecollide(block, self.sprites, False)
+        for block in self.sprites:
+            colliding_blocks = pygame.sprite.spritecollide(block, self.sprites, False)
 
-            for other_block in collidin_blocks:
+            for other_block in colliding_blocks:
                 if block != other_block and block.value == other_block.value and other_block not in moved_blocks:
-                    block.increase_value()
-                    self.sprites.remove(other_block)
-                    moved_blocks.add(block)
+                    new_block = block + other_block
+                    moved_blocks.add(new_block)
+                    blocks_to_remove.extend([block, other_block])
+
+        for block in blocks_to_remove:
+            self.sprites.remove(block)
+
         self._generate_random_block()
 
     def _generate_random_block(self, count: int = 1) -> None:
@@ -104,7 +109,6 @@ class Game:
 
                 if not colliding_blocks:
                     self.sprites.add(block)
-                    logger.debug(f"Generated block({id(block)}) at ({x}, {y})")
                     break
 
     def exit(self) -> None:
