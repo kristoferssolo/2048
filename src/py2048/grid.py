@@ -9,8 +9,15 @@ from .utils import Direction
 
 class Grid(pygame.sprite.Group):
     def move(self, direction: Direction):
-        block: Block
-        for block in self:
+        blocks = list(self.sprites())
+
+        match direction:
+            case Direction.DOWN:
+                blocks.sort(key=lambda block: block.rect.y, reverse=True)
+            case Direction.RIGHT:
+                blocks.sort(key=lambda block: block.rect.x, reverse=True)
+
+        for block in blocks:
             block.move(direction)
 
     def generate_random_block(self, count: int = 1) -> None:
