@@ -1,5 +1,12 @@
 from enum import Enum
 
+from .config import Config
+
+
+def grid_pos(pos: int) -> int:
+    """Return the position in the grid."""
+    return pos // Config.BLOCK_SIZE + 1
+
 
 class Direction(Enum):
     UP = (0, -1)

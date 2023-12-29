@@ -8,12 +8,7 @@ from loguru import logger
 from .colors import COLORS
 from .config import Config
 
-from .utils import Direction
-
-
-def _grid_pos(pos: int) -> int:
-    """Return the position in the grid."""
-    return pos // Config.BLOCK_SIZE + 1
+from .utils import Direction, grid_pos
 
 
 class Block(pygame.sprite.Sprite):
@@ -52,7 +47,7 @@ class Block(pygame.sprite.Sprite):
                 return
 
             self.rect.topleft = new_x, new_y
-            logger.debug(f"Moving block({id(self)}): {self.pos()} => ({_grid_pos(new_x)}, {_grid_pos(new_y)})")
+            logger.debug(f"Moving block({id(self)}): {self.pos()} => ({grid_pos(new_x)}, {grid_pos(new_y)})")
 
     def _calc_new_pos(self, direction: Direction) -> tuple[int, int]:
         """Calculate the new position of the block."""
@@ -109,4 +104,4 @@ class Block(pygame.sprite.Sprite):
 
     def pos(self) -> tuple[int, int]:
         """Return the position of the block"""
-        return _grid_pos(self.rect.x), _grid_pos(self.rect.y)
+        return grid_pos(self.rect.x), grid_pos(self.rect.y)
