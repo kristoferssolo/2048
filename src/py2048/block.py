@@ -95,18 +95,6 @@ class Block(pygame.sprite.Sprite):
         }
         self.image.fill(color_map.get(self.value, COLORS.ERROR))
 
-    def __add__(self, other: "Block") -> None:
-        """Add the value of two blocks and update the current block"""
-        logger.debug(f"Merging blocks ({id(self)}) and ({id(other)}) => ({id(self)}), {self.pos()}")
-        self.value += other.value
-        self.update()
-
-    def __iadd__(self, other: "Block") -> None:
-        """Add the value of two blocks and updae the current block"""
-        logger.debug(f"Merging blocks ({id(self)}) and ({id(other)}) => ({id(self)}), {self.pos()}")
-        self.value += other.value
-        self.update()
-
     def __repr__(self) -> str:
         """Return a string representation of the block"""
         return f"Block({id(self)}): ({self.pos()})"
