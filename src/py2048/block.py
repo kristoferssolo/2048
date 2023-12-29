@@ -20,7 +20,7 @@ class Block(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.Surface((Config.BLOCK_SIZE, Config.BLOCK_SIZE))
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect.topleft = x, y
 
         logger.debug(f"Generated block({id(self)}) at {self}")
 
@@ -38,13 +38,22 @@ class Block(pygame.sprite.Sprite):
         """Move the block by `dx` and `dy`."""
         dx, dy = direction.value
 
-        new_x = self.rect.x + dx * Config.BLOCK_SIZE
-        new_y = self.rect.y + dy * Config.BLOCK_SIZE
+        while True:
+            new_x = self.rect.x + dx * Config.BLOCK_SIZE
+            new_y = self.rect.y + dy * Config.BLOCK_SIZE
 
-        if 0 <= new_x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= new_y <= Config.HEIGHT - Config.BLOCK_SIZE:
+            if not (0 <= new_x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= new_y <= Config.HEIGHT - Config.BLOCK_SIZE):
+                # logger.debug(f"Block({id(self)}) stayed at {self} (out of bounds)")
+                break
+
+            collision = any(block.rect.collidepoint(new_x, new_y) for block in self.groups()[0] if block != self)
+
+            if collision:
+                logger.debug(f"Block({id(self)}) collided with another block, stopped at {self}")
+                break
+
+            self.rect.topleft = new_x, new_y
             logger.debug(f"Moving block({id(self)}): {self} => ({_show_pos(new_x)}, {_show_pos(new_y)})")
-            self.rect.x = new_x
-            self.rect.y = new_y
 
     def update(self) -> None:
         """Update the block"""

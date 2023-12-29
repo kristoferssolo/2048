@@ -9,6 +9,7 @@ from .utils import Direction
 
 class Grid(pygame.sprite.Group):
     def move(self, direction: Direction):
+        block: Block
         for block in self:
             block.move(direction)
 
