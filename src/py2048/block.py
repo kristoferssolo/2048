@@ -43,8 +43,12 @@ class Block(pygame.sprite.Sprite):
                 return
 
             if self._has_collision(new_x, new_y):
-                logger.debug(f"Block({id(self)}) collided with another, stopped at {self.pos()}")
-                return
+                collided_block = self._get_collided_block(new_x, new_y)
+                if collided_block and collided_block.value == self.value:
+                    self._merge(collided_block)
+                else:
+                    logger.debug(f"Block({id(self)}) collided with another, stopped at {self.pos()}")
+                    return
 
             self.rect.topleft = new_x, new_y
             logger.debug(f"Moving block({id(self)}): {self.pos()} => ({grid_pos(new_x)}, {grid_pos(new_y)})")
@@ -62,11 +66,18 @@ class Block(pygame.sprite.Sprite):
         """Checks whether the block has a collision with any other block."""
         return any(block.rect.collidepoint(x, y) for block in self.groups()[0] if block != self)
 
-    def _get_collided_block(self) -> Union["Block", None]:
-        """Get the block that collides with the given rectangle."""
+    def _get_collided_block(self, x: int, y: int) -> Union["Block", None]:
+        """Get the block that collides with the given block."""
+
+        logger.error(list(block for block in self.groups()[0] if block != self and block.rect.collidepoint(x, y)))
+        return next((block for block in self.groups()[0] if block != self and block.rect.collidepoint(x, y)), None)
 
     def _merge(self, other: "Block") -> None:
         """Merge the block with another block."""
+        self.value += other.value
+        self.update()
+        logger.debug(f"Merging block({id(self)}) with block({id(other)}")
+        self.groups()[0].remove(other)
 
     def update(self) -> None:
         """Update the block"""
