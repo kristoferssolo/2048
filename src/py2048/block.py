@@ -19,8 +19,6 @@ class Block(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = x, y
 
-        logger.debug(f"Generated block({id(self)}) at {self}")
-
         self.value: int = value if value is not None else 2 if random.random() <= Config.BLOCK_VALUE_PROBABILITY else 4
         self.font = pygame.font.SysFont(Config.FONT_FAMILY, Config.FONT_SIZE)
         self.update()
@@ -39,7 +37,6 @@ class Block(pygame.sprite.Sprite):
             new_x, new_y = self._calc_new_pos(direction)
 
             if self._is_out_if_bounds(new_x, new_y):
-                logger.debug(f"Block({id(self)}) stayed at {self.pos()} (out of bounds)")
                 return
 
             if self._has_collision(new_x, new_y):
@@ -47,11 +44,9 @@ class Block(pygame.sprite.Sprite):
                 if collided_block and collided_block.value == self.value:
                     self._merge(collided_block)
                 else:
-                    logger.debug(f"Block({id(self)}) collided with another, stopped at {self.pos()}")
                     return
 
             self.rect.topleft = new_x, new_y
-            logger.debug(f"Moving block({id(self)}): {self.pos()} => ({grid_pos(new_x)}, {grid_pos(new_y)})")
 
     def _calc_new_pos(self, direction: Direction) -> tuple[int, int]:
         """Calculate the new position of the block."""
@@ -69,14 +64,13 @@ class Block(pygame.sprite.Sprite):
     def _get_collided_block(self, x: int, y: int) -> Union["Block", None]:
         """Get the block that collides with the given block."""
 
-        logger.error(list(block for block in self.groups()[0] if block != self and block.rect.collidepoint(x, y)))
         return next((block for block in self.groups()[0] if block != self and block.rect.collidepoint(x, y)), None)
 
     def _merge(self, other: "Block") -> None:
         """Merge the block with another block."""
         self.value += other.value
         self.update()
-        logger.debug(f"Merging block({id(self)}) with block({id(other)}")
+        logger.debug(f"Merging block({id(self)}) with block({id(other)})")
         self.groups()[0].remove(other)
 
     def update(self) -> None:

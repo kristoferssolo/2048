@@ -57,19 +57,15 @@ class Game:
                     self.exit()
 
     def move_up(self) -> None:
-        logger.debug("Move up")
         self.blocks.move(Direction.UP)
 
     def move_down(self) -> None:
-        logger.debug("Move down")
         self.blocks.move(Direction.DOWN)
 
     def move_left(self) -> None:
-        logger.debug("Move left")
         self.blocks.move(Direction.LEFT)
 
     def move_right(self) -> None:
-        logger.debug("Move right")
         self.blocks.move(Direction.RIGHT)
 
     def exit(self) -> None:

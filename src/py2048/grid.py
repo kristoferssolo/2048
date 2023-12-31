@@ -18,6 +18,7 @@ class Grid(pygame.sprite.Group):
                 blocks.sort(key=lambda block: block.rect.x, reverse=True)
 
         for block in blocks:
+            block: Block
             block.move(direction)
 
         self.generate_block()
