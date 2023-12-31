@@ -59,6 +59,9 @@ class Block(pygame.sprite.Sprite):
 
     def _has_collision(self, x: int, y: int) -> bool:
         """Checks whether the block has a collision with any other block."""
+        groups = self.groups()
+        if not groups or not groups[0]:
+            return False
         return any(block.rect.collidepoint(x, y) for block in self.groups()[0] if block != self)
 
     def _get_collided_block(self, x: int, y: int) -> Union["Block", None]:
