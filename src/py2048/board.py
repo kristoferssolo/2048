@@ -1,6 +1,7 @@
 import random
 
 import pygame
+from loguru import logger
 
 from .block import Block
 from .config import Config
@@ -12,8 +13,15 @@ class Board(pygame.sprite.Group):
         blocks = self.sprites()
         block: Block
 
-        if direction in {Direction.DOWN, Direction.RIGHT}:
-            blocks.sort(key=lambda block: (block.rect.x, block.rect.y), reverse=True)
+        match direction:
+            case Direction.UP:
+                blocks.sort(key=lambda block: block.rect.y)
+            case Direction.DOWN:
+                blocks.sort(key=lambda block: block.rect.y, reverse=True)
+            case Direction.LEFT:
+                blocks.sort(key=lambda block: block.rect.x)
+            case Direction.RIGHT:
+                blocks.sort(key=lambda block: block.rect.x, reverse=True)
 
         for block in blocks:
             block.move(direction)
@@ -39,4 +47,5 @@ class Board(pygame.sprite.Group):
 
                 if not colliding_blocks:
                     self.add(block)
+                    logger.debug(f"Created block at {block.pos()}")
                     break

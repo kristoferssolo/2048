@@ -3,7 +3,6 @@ import random
 from typing import Union
 
 import pygame
-from loguru import logger
 
 from .colors import COLORS
 from .config import Config
@@ -75,7 +74,6 @@ class Block(pygame.sprite.Sprite):
         self.group.remove(self)
         self.value += other.value
         self.update()
-        logger.debug(f"Merging block({id(self)}) with block({id(other)})")
         self.group.add(self)
 
     def update(self) -> None:
