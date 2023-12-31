@@ -19,8 +19,8 @@ class Game:
         self.screen: pygame.Surface = pygame.display.set_mode((Config.WIDTH, Config.HEIGHT))
         pygame.display.set_caption("2048")
         self.blocks = Grid()
-        # self.blocks.generate_block(Config.INITIAL_BLOCK_COUNT)
-        self.blocks.generate_block(2, (1, 1), (1, 3))
+        self.blocks.generate_block(Config.INITIAL_BLOCK_COUNT)
+        # self.blocks.generate_block(2, (1, 1), (1, 3))
 
     def run(self) -> None:
         """Run the game loop."""
