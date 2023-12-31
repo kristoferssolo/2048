@@ -3,9 +3,10 @@ import sys
 import pygame
 from loguru import logger
 
+from .board import Board
+
 from .colors import COLORS
 from .config import Config
-from .grid import Grid
 from .logger import setup_logger
 from .utils import Direction
 
@@ -18,7 +19,7 @@ class Game:
         pygame.init()
         self.screen: pygame.Surface = pygame.display.set_mode((Config.WIDTH, Config.HEIGHT))
         pygame.display.set_caption("2048")
-        self.blocks = Grid()
+        self.blocks = Board()
         self.blocks.generate_block(Config.INITIAL_BLOCK_COUNT)
         # self.blocks.generate_block(2, (1, 1), (1, 3))
 

@@ -12,7 +12,7 @@ from .utils import Direction, grid_pos
 
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, x: int, y: int, value: int | None = 2):
+    def __init__(self, x: int, y: int, group: pygame.sprite.Group, value: int | None = 2):
         """Initialize a block"""
         super().__init__()
         self.image = pygame.Surface((Config.BLOCK_SIZE, Config.BLOCK_SIZE))
@@ -21,6 +21,7 @@ class Block(pygame.sprite.Sprite):
 
         self.value: int = value if value is not None else 2 if random.random() <= Config.BLOCK_VALUE_PROBABILITY else 4
         self.font = pygame.font.SysFont(Config.FONT_FAMILY, Config.FONT_SIZE)
+        self.group = group
         self.update()
 
     def _draw_value(self) -> None:
@@ -46,7 +47,9 @@ class Block(pygame.sprite.Sprite):
                 else:
                     return
 
+            self.group.remove(self)
             self.rect.topleft = new_x, new_y
+            self.group.add(self)
 
     def _calc_new_pos(self, direction: Direction) -> tuple[int, int]:
         """Calculate the new position of the block."""
@@ -59,22 +62,21 @@ class Block(pygame.sprite.Sprite):
 
     def _has_collision(self, x: int, y: int) -> bool:
         """Checks whether the block has a collision with any other block."""
-        groups = self.groups()
-        if not groups or not groups[0]:
-            return False
-        return any(block.rect.collidepoint(x, y) for block in self.groups()[0] if block != self)
+        return any(block.rect.collidepoint(x, y) for block in self.group if block != self)
 
     def _get_collided_block(self, x: int, y: int) -> Union["Block", None]:
         """Get the block that collides with the given block."""
 
-        return next((block for block in self.groups()[0] if block != self and block.rect.collidepoint(x, y)), None)
+        return next((block for block in self.group if block != self and block.rect.collidepoint(x, y)), None)
 
     def _merge(self, other: "Block") -> None:
         """Merge the block with another block."""
+        self.group.remove(other)
+        self.group.remove(self)
         self.value += other.value
         self.update()
         logger.debug(f"Merging block({id(self)}) with block({id(other)})")
-        self.groups()[0].remove(other)
+        self.group.add(self)
 
     def update(self) -> None:
         """Update the block"""
@@ -100,7 +102,7 @@ class Block(pygame.sprite.Sprite):
 
     def __repr__(self) -> str:
         """Return a string representation of the block"""
-        return f"Block({id(self)}): ({self.pos()})"
+        return f"Block({id(self)}): {self.pos()} num={self.value}"
 
     def __str__(self) -> str:
         """Return a string representation of the block"""
