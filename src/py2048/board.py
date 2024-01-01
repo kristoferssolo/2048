@@ -82,3 +82,8 @@ class Board(pygame.sprite.Group):
     def is_game_over(self) -> bool:
         """Check if the game is over."""
         return self._is_full() and not self._can_move()
+
+    def restart(self) -> None:
+        """Restart the game."""
+        self.empty()
+        self.generate_initial_blocks()
