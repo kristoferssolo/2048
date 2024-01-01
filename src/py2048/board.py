@@ -20,12 +20,28 @@ class Board(pygame.sprite.Group):
         """Initiate the game."""
         self.generate_initial_blocks()
 
-    def draw(self, screen: pygame.Surface) -> None:
+    def draw(self, surface: pygame.Surface) -> None:
         """Draw the board."""
         block: Block
-        pygame.draw.rect(screen, "#fff500", self.rect, 2)
+        self._draw_background(surface)
 
-        super().draw(screen)
+        super().draw(surface)
+
+    def _draw_background(self, surface: pygame.Surface) -> None:
+        """Draw the board background."""
+        pygame.draw.rect(
+            surface,
+            Config.COLORSCHEME.BOARD_BG,
+            self.rect,
+            border_radius=Config.BLOCK_BORDER_RADIUS,
+        )  # background
+        pygame.draw.rect(
+            surface,
+            Config.COLORSCHEME.BOARD_BG,
+            self.rect,
+            width=Config.BLOCK_BORDER_WIDTH,
+            border_radius=Config.BLOCK_BORDER_RADIUS,
+        )  # border
 
     def move(self, direction: Direction):
         """Move the blocks in the specified direction."""

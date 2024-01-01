@@ -29,37 +29,26 @@ class Block(pygame.sprite.Sprite):
         self.group = group
         self.update()
 
-    def _draw_rounded_rect(
-        self,
-        surface: pygame.Surface,
-        color: ColorScheme | tuple[int, int, int, int],
-        rect: tuple[int, int, int, int],
-        border_radius: int,
-        width: int,
-    ) -> None:
+    def _draw_background(self, surface: pygame.Surface) -> None:
         """Draw a rounded rectangle with borders on the given surface."""
-        pygame.draw.rect(surface, color, rect, border_radius=border_radius)
+        rect = (0, 0, Config.BLOCK_SIZE, Config.BLOCK_SIZE)
+        pygame.draw.rect(
+            surface, self._get_color(), rect, border_radius=Config.BLOCK_BORDER_RADIUS
+        )  # background
         pygame.draw.rect(
             surface,
             (0, 0, 0, 0),
             rect,
-            border_radius=border_radius,
-            width=width,
-        )
+            border_radius=Config.BLOCK_BORDER_RADIUS,
+            width=Config.BLOCK_BORDER_WIDTH,
+        )  # border
 
     def _create_block_surface(self) -> pygame.Surface:
         """Create a surface for the block."""
         block_surface = pygame.Surface(
             (Config.BLOCK_SIZE, Config.BLOCK_SIZE), pygame.SRCALPHA
         )
-        self._draw_rounded_rect(
-            block_surface,
-            self._get_color(),
-            # (255, 255, 255, 0),
-            (0, 0, Config.BLOCK_SIZE, Config.BLOCK_SIZE),
-            Config.BLOCK_BORDER_RADIUS,
-            Config.BLOCK_BORDER_WIDTH,
-        )
+        self._draw_background(block_surface)
         return block_surface
 
     def draw(self) -> None:
