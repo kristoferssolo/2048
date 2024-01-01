@@ -71,3 +71,11 @@ class Board(pygame.sprite.Group):
         """Check if the board is full."""
         return len(self.sprites()) == Config.GRID_SIZE**2
 
+    def _can_move(self) -> bool:
+        """Check if any movement is possible on the board."""
+        block: Block
+        for block in self.sprites():
+            if block.can_move():
+                return True
+        return False
+

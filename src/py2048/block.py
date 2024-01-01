@@ -37,8 +37,6 @@ class Block(pygame.sprite.Sprite):
 
     def move(self, direction: Direction) -> None:
         """Move the block by `dx` and `dy`."""
-        dx, dy = direction * Config.BLOCK_SIZE
-
         while True:
             new_x, new_y = self._calc_new_pos(direction)
 
@@ -47,7 +45,7 @@ class Block(pygame.sprite.Sprite):
 
             if self._has_collision(new_x, new_y):
                 collided_block = self._get_collided_block(new_x, new_y)
-                if collided_block and collided_block.value == self.value:
+                if collided_block and self._can_merge(collided_block):
                     self._merge(collided_block)
                 else:
                     return
@@ -86,6 +84,10 @@ class Block(pygame.sprite.Sprite):
             None,
         )
 
+    def _can_merge(self, other: "Block") -> bool:
+        """Check if the block can merge with another block."""
+        return self.value == other.value
+
     def _merge(self, other: "Block") -> None:
         """Merge the block with another block."""
         self.group.remove(other)
@@ -98,6 +100,18 @@ class Block(pygame.sprite.Sprite):
         """Update the block"""
         self._change_color()
         self._draw_value()
+
+    def can_move(self) -> bool:
+        """Check if the block can move"""
+        for direction in Direction:
+            new_x, new_y = self._calc_new_pos(direction)
+            if not self._is_out_if_bounds(new_x, new_y) and self._has_collision(
+                new_x, new_y
+            ):
+                collided_block = self._get_collided_block(new_x, new_y)
+                if collided_block and self._can_merge(collided_block):
+                    return True
+        return False
 
     def _change_color(self) -> None:
         """Change the color of the block based on its value"""
