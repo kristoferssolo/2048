@@ -79,3 +79,6 @@ class Board(pygame.sprite.Group):
                 return True
         return False
 
+    def is_game_over(self) -> bool:
+        """Check if the game is over."""
+        return self._is_full() and not self._can_move()
