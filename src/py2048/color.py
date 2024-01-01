@@ -238,4 +238,4 @@ class TokyoNightStorm:
     YELLOW = "#E0AF68"
 
 
-Colors = TokyoNightNight
+Color = TokyoNightNight

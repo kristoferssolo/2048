@@ -23,10 +23,16 @@ warn_unreachable = true
 warn_unused_configs = true
 
 [tool.ruff]
-line-length = 160
+line-length = 120
+indent-width = 4
 
-[tool.black]
-line-length = 160
+[tool.ruff.lint]
+select = ["I"]
 
-[tool.ruff.flake8-quotes]
-docstring-quotes = "double"
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+docstring-code-line-length = 40

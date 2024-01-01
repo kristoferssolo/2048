@@ -4,11 +4,18 @@ import pygame
 from loguru import logger
 
 from .block import Block
+from .color import Color
 from .config import Config
 from .utils import Direction
 
 
 class Board(pygame.sprite.Group):
+    def __init__(self, screen: pygame.Surface):
+        super().__init__()
+        self.generate_block(Config.INITIAL_BLOCK_COUNT)
+        self.screen = screen
+        self._draw_grid()
+
     def move(self, direction: Direction):
         blocks = self.sprites()
         block: Block
@@ -28,6 +35,15 @@ class Board(pygame.sprite.Group):
 
         self.generate_block()
 
+    def _draw_grid(self) -> None:
+        """Draw the grid."""
+        for x in range(0, Config.WIDTH + 20, Config.BLOCK_SIZE):
+            pygame.draw.line(
+                self.screen, Color.BG_HIGHLIGHT, (x, 0), (x, Config.HEIGHT)
+            )
+        for y in range(0, Config.HEIGHT + 20, Config.BLOCK_SIZE):
+            pygame.draw.line(self.screen, Color.BG_HIGHLIGHT, (0, y), (Config.WIDTH, y))
+
     def generate_block(self, amount: int = 1, *pos: tuple[int, int]) -> None:
         """Generate `amount` number of blocks."""
         if pos:
@@ -43,7 +59,9 @@ class Board(pygame.sprite.Group):
                 y = random.randint(0, 3) * Config.BLOCK_SIZE
                 block = Block(x, y, self)
 
-                colliding_blocks = pygame.sprite.spritecollide(block, self, False)  # check for collisions
+                colliding_blocks = pygame.sprite.spritecollide(
+                    block, self, False
+                )  # check for collisions
 
                 if not colliding_blocks:
                     self.add(block)

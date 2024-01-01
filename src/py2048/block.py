@@ -1,12 +1,10 @@
 import random
-
 from typing import Union
 
 import pygame
 
-from .colors import COLORS
+from .color import Color
 from .config import Config
-
 from .utils import Direction, grid_pos
 
 
@@ -25,7 +23,7 @@ class Block(pygame.sprite.Sprite):
 
     def _draw_value(self) -> None:
         """Draw the value of the block"""
-        text = self.font.render(str(self.value), True, COLORS.FG)
+        text = self.font.render(str(self.value), True, Color.FG)
         text_rect = text.get_rect(center=self.image.get_rect().center)
         self.image.blit(text, text_rect)
 
@@ -84,19 +82,19 @@ class Block(pygame.sprite.Sprite):
     def _change_color(self) -> None:
         """Change the color of the block based on its value"""
         color_map = {
-            2: COLORS.BLUE,
-            4: COLORS.BLUE0,
-            8: COLORS.BLUE1,
-            16: COLORS.BLUE2,
-            32: COLORS.DARK3,
-            64: COLORS.BORDER_HIGHLIGHT,
-            128: COLORS.BLUE5,
-            256: COLORS.BLUE6,
-            512: COLORS.BLUE7,
-            1024: COLORS.ORANGE,
-            2048: COLORS.RED,
+            2: Color.BLUE,
+            4: Color.BLUE0,
+            8: Color.BLUE1,
+            16: Color.BLUE2,
+            32: Color.DARK3,
+            64: Color.BORDER_HIGHLIGHT,
+            128: Color.BLUE5,
+            256: Color.BLUE6,
+            512: Color.BLUE7,
+            1024: Color.ORANGE,
+            2048: Color.RED,
         }
-        self.image.fill(color_map.get(self.value, COLORS.ERROR))
+        self.image.fill(color_map.get(self.value, Color.ERROR))
 
     def __repr__(self) -> str:
         """Return a string representation of the block"""

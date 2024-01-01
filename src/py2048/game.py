@@ -4,8 +4,7 @@ import pygame
 from loguru import logger
 
 from .board import Board
-
-from .colors import COLORS
+from .color import Color
 from .config import Config
 from .logger import setup_logger
 from .utils import Direction
@@ -19,9 +18,7 @@ class Game:
         pygame.init()
         self.screen: pygame.Surface = pygame.display.set_mode((Config.WIDTH, Config.HEIGHT))
         pygame.display.set_caption("2048")
-        self.blocks = Board()
-        self.blocks.generate_block(Config.INITIAL_BLOCK_COUNT)
-        # self.blocks.generate_block(2, (1, 1), (1, 3))
+        self.blocks = Board(self.screen)
 
     def run(self) -> None:
         """Run the game loop."""
@@ -36,7 +33,7 @@ class Game:
 
     def _render(self) -> None:
         """Render the game."""
-        self.screen.fill(COLORS.BG)
+        self.screen.fill(Color.BG)
         self.blocks.draw(self.screen)
         pygame.display.flip()
 
