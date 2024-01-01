@@ -7,6 +7,7 @@ from .board import Board
 from .color import Color
 from .config import Config
 from .logger import setup_logger
+from .screens.header import Header
 from .utils import Direction
 
 
@@ -16,11 +17,10 @@ class Game:
         logger.info("Initializing game")
 
         pygame.init()
-        self.screen: pygame.Surface = pygame.display.set_mode(
-            (Config.WIDTH, Config.HEIGHT)
-        )
+        self.screen: pygame.Surface = pygame.display.set_mode(Config.SCREEN_SIZE)
         pygame.display.set_caption("2048")
-        self.blocks = Board(self.screen)
+        self.board = Board()
+        self.header = Header()
 
     def run(self) -> None:
         """Run the game loop."""
@@ -31,12 +31,13 @@ class Game:
 
     def _update(self) -> None:
         """Update the game."""
-        self.blocks.update()
+        self.board.update()
 
     def _render(self) -> None:
         """Render the game."""
         self.screen.fill(Color.BG)
-        self.blocks.draw(self.screen)
+        self.board.draw(self.screen)
+        self.header.draw(self.screen)
         pygame.display.flip()
 
     def _hande_events(self) -> None:
@@ -57,16 +58,16 @@ class Game:
                     self.exit()
 
     def move_up(self) -> None:
-        self.blocks.move(Direction.UP)
+        self.board.move(Direction.UP)
 
     def move_down(self) -> None:
-        self.blocks.move(Direction.DOWN)
+        self.board.move(Direction.DOWN)
 
     def move_left(self) -> None:
-        self.blocks.move(Direction.LEFT)
+        self.board.move(Direction.LEFT)
 
     def move_right(self) -> None:
-        self.blocks.move(Direction.RIGHT)
+        self.board.move(Direction.RIGHT)
 
     def exit(self) -> None:
         """Exit the game."""

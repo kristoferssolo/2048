@@ -10,12 +10,26 @@ from .utils import Direction
 
 
 class Board(pygame.sprite.Group):
-    def __init__(self, screen: pygame.Surface):
+    def __init__(self):
         super().__init__()
-        self.screen = screen
+        self.rect = pygame.Rect(0, 0, Config.BOARD_WIDTH, Config.BOARD_HEIGHT)
+        self.rect.x = Config.BOARD_X
+        self.rect.y = Config.BOARD_Y
+        self.initiate_game()
+
+    def initiate_game(self) -> None:
+        """Initiate the game."""
         self.generate_initial_blocks()
 
+    def draw(self, screen: pygame.Surface) -> None:
+        """Draw the board."""
+        block: Block
+        pygame.draw.rect(screen, Color.YELLOW, self.rect, 2)
+
+        super().draw(screen)
+
     def move(self, direction: Direction):
+        """Move the blocks in the specified direction."""
         blocks = self.sprites()
         block: Block
 
@@ -54,8 +68,8 @@ class Board(pygame.sprite.Group):
         """Generate a block with random coordinates aligned with the grid."""
         while True:
             # Generate random coordinates aligned with the grid
-            x = random.randint(0, 3) * Config.BLOCK_SIZE
-            y = random.randint(0, 3) * Config.BLOCK_SIZE
+            x = random.randint(0, 3) * Config.BLOCK_SIZE + Config.BOARD_X
+            y = random.randint(0, 3) * Config.BLOCK_SIZE + Config.BOARD_Y
             block = Block(x, y, self)
 
             colliding_blocks = pygame.sprite.spritecollide(
@@ -64,12 +78,11 @@ class Board(pygame.sprite.Group):
 
             if not colliding_blocks:
                 self.add(block)
-                logger.debug(f"Created block at {block.pos}")
-                break
+                return
 
     def _is_full(self) -> bool:
         """Check if the board is full."""
-        return len(self.sprites()) == Config.GRID_SIZE**2
+        return len(self.sprites()) == Config.BOARD_SIZE**2
 
     def _can_move(self) -> bool:
         """Check if any movement is possible on the board."""
@@ -83,7 +96,7 @@ class Board(pygame.sprite.Group):
         """Check if the game is over."""
         return self._is_full() and not self._can_move()
 
-    def restart(self) -> None:
-        """Restart the game."""
+    def reset(self) -> None:
+        """Reset the board."""
         self.empty()
-        self.generate_initial_blocks()
+        self.initiate_game()
