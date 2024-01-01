@@ -62,8 +62,8 @@ class Block(pygame.sprite.Sprite):
     def _is_out_if_bounds(self, x: int, y: int) -> bool:
         """Return whether the block is out of bounds."""
         return not (
-            0 <= x <= Config.WIDTH - Config.BLOCK_SIZE
-            and 0 <= y <= Config.HEIGHT - Config.BLOCK_SIZE
+            0 <= x <= Config.GRID_WIDTH - Config.BLOCK_SIZE
+            and 0 <= y <= Config.GRID_HEIGHT - Config.BLOCK_SIZE
         )
 
     def _has_collision(self, x: int, y: int) -> bool:

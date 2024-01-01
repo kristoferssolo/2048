@@ -16,7 +16,9 @@ class Game:
         logger.info("Initializing game")
 
         pygame.init()
-        self.screen: pygame.Surface = pygame.display.set_mode((Config.WIDTH, Config.HEIGHT))
+        self.screen: pygame.Surface = pygame.display.set_mode(
+            (Config.WIDTH, Config.HEIGHT)
+        )
         pygame.display.set_caption("2048")
         self.blocks = Board(self.screen)
 
