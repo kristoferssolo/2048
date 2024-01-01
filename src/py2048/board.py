@@ -43,8 +43,9 @@ class Board(pygame.sprite.Group):
             border_radius=Config.BLOCK_BORDER_RADIUS,
         )  # border
 
-    def move(self, direction: Direction):
+    def move(self, direction: Direction) -> int:
         """Move the blocks in the specified direction."""
+        score = 0
         blocks = self.sprites()
         block: Block
 
@@ -59,10 +60,12 @@ class Board(pygame.sprite.Group):
                 blocks.sort(key=lambda block: block.rect.x, reverse=True)
 
         for block in blocks:
-            block.move(direction)
+            score += block.move(direction)
 
         if not self._is_full():
             self.generate_random_block()
+
+        return score
 
     def generate_initial_blocks(self) -> None:
         """Generate the initial blocks."""

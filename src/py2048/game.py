@@ -20,6 +20,7 @@ class Game:
         pygame.display.set_caption("2048")
         self.board = Board()
         self.header = Header()
+        self.score = 0
 
     def run(self) -> None:
         """Run the game loop."""
@@ -36,7 +37,7 @@ class Game:
         """Render the game."""
         self.screen.fill(Config.COLORSCHEME.BG)
         self.board.draw(self.screen)
-        self.header.draw(self.screen)
+        self.header.draw(self.screen, self.score)
         pygame.display.flip()
 
     def _hande_events(self) -> None:
@@ -57,16 +58,16 @@ class Game:
                     self.exit()
 
     def move_up(self) -> None:
-        self.board.move(Direction.UP)
+        self.score += self.board.move(Direction.UP)
 
     def move_down(self) -> None:
-        self.board.move(Direction.DOWN)
+        self.score += self.board.move(Direction.DOWN)
 
     def move_left(self) -> None:
-        self.board.move(Direction.LEFT)
+        self.score += self.board.move(Direction.LEFT)
 
     def move_right(self) -> None:
-        self.board.move(Direction.RIGHT)
+        self.score += self.board.move(Direction.RIGHT)
 
     def exit(self) -> None:
         """Exit the game."""

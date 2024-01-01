@@ -63,20 +63,21 @@ class Block(pygame.sprite.Sprite):
 
         self.image.blit(block_surface, (0, 0))
 
-    def move(self, direction: Direction) -> None:
+    def move(self, direction: Direction) -> int:
         """Move the block by `dx` and `dy`."""
+        score = 0
         while True:
             new_x, new_y = self._calc_new_pos(direction)
 
             if self._is_out_if_bounds(new_x, new_y):
-                return
+                return score
 
             if self._has_collision(new_x, new_y):
                 collided_block = self._get_collided_block(new_x, new_y)
                 if collided_block and self._can_merge(collided_block):
-                    self._merge(collided_block)
+                    score += self._merge(collided_block)
                 else:
-                    return
+                    return score
 
             self.group.remove(self)
             self.rect.topleft = new_x, new_y
@@ -117,13 +118,14 @@ class Block(pygame.sprite.Sprite):
         """Check if the block can merge with another block."""
         return self.value == other.value
 
-    def _merge(self, other: "Block") -> None:
+    def _merge(self, other: "Block") -> int:
         """Merge the block with another block."""
         self.group.remove(other)
         self.group.remove(self)
         self.value += other.value
         self.update()
         self.group.add(self)
+        return self.value
 
     def update(self) -> None:
         """Update the block"""
