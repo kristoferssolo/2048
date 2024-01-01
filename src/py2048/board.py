@@ -4,7 +4,6 @@ import pygame
 from loguru import logger
 
 from .block import Block
-from .color import Color
 from .config import Config
 from .utils import Direction
 
@@ -24,7 +23,7 @@ class Board(pygame.sprite.Group):
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the board."""
         block: Block
-        pygame.draw.rect(screen, Color.YELLOW, self.rect, 2)
+        pygame.draw.rect(screen, "#fff500", self.rect, 2)
 
         super().draw(screen)
 

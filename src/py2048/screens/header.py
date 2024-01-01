@@ -1,6 +1,5 @@
 import pygame
 
-from ..color import Color
 from ..config import Config
 
 
@@ -11,4 +10,4 @@ class Header:
 
     def draw(self, screen: pygame.Surface) -> None:
         """Draw the header."""
-        pygame.draw.rect(screen, Color.MAGENTA, self.rect, 2)
+        pygame.draw.rect(screen, "#ff00ee", self.rect, 2)

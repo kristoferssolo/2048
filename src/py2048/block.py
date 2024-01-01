@@ -3,7 +3,7 @@ from typing import Union
 
 import pygame
 
-from .color import Color
+from .color import ColorScheme
 from .config import Config
 from .utils import Direction, grid_pos
 
@@ -14,9 +14,6 @@ class Block(pygame.sprite.Sprite):
     ):
         """Initialize a block"""
         super().__init__()
-        self.image = pygame.Surface((Config.BLOCK_SIZE, Config.BLOCK_SIZE))
-        self.rect = self.image.get_rect()
-        self.rect.topleft = x, y
 
         self.value: int = (
             value
@@ -25,15 +22,57 @@ class Block(pygame.sprite.Sprite):
             if random.random() <= Config.BLOCK_VALUE_PROBABILITY
             else 4
         )
+        self.image = self._create_block_surface()
+        self.rect = self.image.get_rect()
+        self.rect.topleft = x, y
         self.font = pygame.font.SysFont(Config.FONT_FAMILY, Config.FONT_SIZE)
         self.group = group
         self.update()
 
-    def _draw_value(self) -> None:
+    def _draw_rounded_rect(
+        self,
+        surface: pygame.Surface,
+        color: ColorScheme | tuple[int, int, int, int],
+        rect: tuple[int, int, int, int],
+        border_radius: int,
+        width: int,
+    ) -> None:
+        """Draw a rounded rectangle with borders on the given surface."""
+        pygame.draw.rect(surface, color, rect, border_radius=border_radius)
+        pygame.draw.rect(
+            surface,
+            (0, 0, 0, 0),
+            rect,
+            border_radius=border_radius,
+            width=width,
+        )
+
+    def _create_block_surface(self) -> pygame.Surface:
+        """Create a surface for the block."""
+        block_surface = pygame.Surface(
+            (Config.BLOCK_SIZE, Config.BLOCK_SIZE), pygame.SRCALPHA
+        )
+        self._draw_rounded_rect(
+            block_surface,
+            self._get_color(),
+            # (255, 255, 255, 0),
+            (0, 0, Config.BLOCK_SIZE, Config.BLOCK_SIZE),
+            Config.BLOCK_BORDER_RADIUS,
+            Config.BLOCK_BORDER_WIDTH,
+        )
+        return block_surface
+
+    def draw(self) -> None:
         """Draw the value of the block"""
-        text = self.font.render(str(self.value), True, Color.FG)
-        text_rect = text.get_rect(center=self.image.get_rect().center)
-        self.image.blit(text, text_rect)
+        text = self.font.render(str(self.value), True, Config.COLORSCHEME.DARK_TEXT)
+        block_surface = self._create_block_surface()
+
+        block_center: tuple[int, int] = (Config.BLOCK_SIZE // 2, Config.BLOCK_SIZE // 2)
+
+        text_rect: pygame.Rect = text.get_rect(center=self.image.get_rect().center)
+        block_surface.blit(text, text_rect)
+
+        self.image.blit(block_surface, (0, 0))
 
     def move(self, direction: Direction) -> None:
         """Move the block by `dx` and `dy`."""
@@ -99,8 +138,7 @@ class Block(pygame.sprite.Sprite):
 
     def update(self) -> None:
         """Update the block"""
-        self._change_color()
-        self._draw_value()
+        self.draw()
 
     def can_move(self) -> bool:
         """Check if the block can move"""
@@ -114,22 +152,22 @@ class Block(pygame.sprite.Sprite):
                     return True
         return False
 
-    def _change_color(self) -> None:
+    def _get_color(self) -> ColorScheme:
         """Change the color of the block based on its value"""
         color_map = {
-            2: Color.BLUE,
-            4: Color.BLUE0,
-            8: Color.BLUE1,
-            16: Color.BLUE2,
-            32: Color.DARK3,
-            64: Color.BORDER_HIGHLIGHT,
-            128: Color.BLUE5,
-            256: Color.BLUE6,
-            512: Color.BLUE7,
-            1024: Color.ORANGE,
-            2048: Color.RED,
+            2: Config.COLORSCHEME.BLOCK_2,
+            4: Config.COLORSCHEME.BLOCK_4,
+            8: Config.COLORSCHEME.BLOCK_8,
+            16: Config.COLORSCHEME.BLOCK_16,
+            32: Config.COLORSCHEME.BLOCK_32,
+            64: Config.COLORSCHEME.BLOCK_64,
+            128: Config.COLORSCHEME.BLOCK_128,
+            256: Config.COLORSCHEME.BLOCK_256,
+            512: Config.COLORSCHEME.BLOCK_512,
+            1024: Config.COLORSCHEME.BLOCK_1024,
+            2048: Config.COLORSCHEME.BLOCK_2048,
         }
-        self.image.fill(color_map.get(self.value, Color.ERROR))
+        return color_map.get(self.value, Config.COLORSCHEME.BLOCK_ELSE)
 
     def __repr__(self) -> str:
         """Return a string representation of the block"""

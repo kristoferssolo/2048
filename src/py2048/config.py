@@ -1,12 +1,15 @@
+from .color import ColorScheme
+
+
 class Config:
     FONT_FAMILY = "Roboto"
     FONT_SIZE = 32
+    COLORSCHEME = ColorScheme.ORIGINAL.value
 
     BOARD_SIZE = 4
     BLOCK_SIZE = 50
-
-    # WIDTH = BOARD_SIZE * BLOCK_SIZE + BLOCK_SIZE
-    # HEIGHT = BOARD_SIZE * BLOCK_SIZE + BLOCK_SIZE * 2
+    BLOCK_BORDER_WIDTH = 2
+    BLOCK_BORDER_RADIUS = 5
 
     BOARD_WIDTH = BOARD_SIZE * BLOCK_SIZE
     BOARD_HEIGHT = BOARD_SIZE * BLOCK_SIZE

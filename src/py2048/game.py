@@ -4,7 +4,6 @@ import pygame
 from loguru import logger
 
 from .board import Board
-from .color import Color
 from .config import Config
 from .logger import setup_logger
 from .screens.header import Header
@@ -35,7 +34,7 @@ class Game:
 
     def _render(self) -> None:
         """Render the game."""
-        self.screen.fill(Color.BG)
+        self.screen.fill(Config.COLORSCHEME.BG)
         self.board.draw(self.screen)
         self.header.draw(self.screen)
         pygame.display.flip()
