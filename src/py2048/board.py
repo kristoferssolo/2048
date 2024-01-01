@@ -32,7 +32,8 @@ class Board(pygame.sprite.Group):
         for block in blocks:
             block.move(direction)
 
-        self.generate_random_block()
+        if not self._is_full():
+            self.generate_random_block()
 
     def generate_initial_blocks(self) -> None:
         """Generate the initial blocks."""
@@ -57,9 +58,16 @@ class Board(pygame.sprite.Group):
             y = random.randint(0, 3) * Config.BLOCK_SIZE
             block = Block(x, y, self)
 
-            colliding_blocks = pygame.sprite.spritecollide(block, self, False)  # check for collisions
+            colliding_blocks = pygame.sprite.spritecollide(
+                block, self, False
+            )  # check for collisions
 
             if not colliding_blocks:
                 self.add(block)
                 logger.debug(f"Created block at {block.pos}")
                 break
+
+    def _is_full(self) -> bool:
+        """Check if the board is full."""
+        return len(self.sprites()) == Config.GRID_SIZE**2
+
