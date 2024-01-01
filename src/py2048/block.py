@@ -9,14 +9,22 @@ from .utils import Direction, grid_pos
 
 
 class Block(pygame.sprite.Sprite):
-    def __init__(self, x: int, y: int, group: pygame.sprite.Group, value: int | None = 2):
+    def __init__(
+        self, x: int, y: int, group: pygame.sprite.Group, value: int | None = 2
+    ):
         """Initialize a block"""
         super().__init__()
         self.image = pygame.Surface((Config.BLOCK_SIZE, Config.BLOCK_SIZE))
         self.rect = self.image.get_rect()
         self.rect.topleft = x, y
 
-        self.value: int = value if value is not None else 2 if random.random() <= Config.BLOCK_VALUE_PROBABILITY else 4
+        self.value: int = (
+            value
+            if value is not None
+            else 2
+            if random.random() <= Config.BLOCK_VALUE_PROBABILITY
+            else 4
+        )
         self.font = pygame.font.SysFont(Config.FONT_FAMILY, Config.FONT_SIZE)
         self.group = group
         self.update()
@@ -55,16 +63,28 @@ class Block(pygame.sprite.Sprite):
 
     def _is_out_if_bounds(self, x: int, y: int) -> bool:
         """Return whether the block is out of bounds."""
-        return not (0 <= x <= Config.WIDTH - Config.BLOCK_SIZE and 0 <= y <= Config.HEIGHT - Config.BLOCK_SIZE)
+        return not (
+            0 <= x <= Config.WIDTH - Config.BLOCK_SIZE
+            and 0 <= y <= Config.HEIGHT - Config.BLOCK_SIZE
+        )
 
     def _has_collision(self, x: int, y: int) -> bool:
         """Checks whether the block has a collision with any other block."""
-        return any(block.rect.collidepoint(x, y) for block in self.group if block != self)
+        return any(
+            block.rect.collidepoint(x, y) for block in self.group if block != self
+        )
 
     def _get_collided_block(self, x: int, y: int) -> Union["Block", None]:
         """Get the block that collides with the given block."""
 
-        return next((block for block in self.group if block != self and block.rect.collidepoint(x, y)), None)
+        return next(
+            (
+                block
+                for block in self.group
+                if block != self and block.rect.collidepoint(x, y)
+            ),
+            None,
+        )
 
     def _merge(self, other: "Block") -> None:
         """Merge the block with another block."""
@@ -98,7 +118,7 @@ class Block(pygame.sprite.Sprite):
 
     def __repr__(self) -> str:
         """Return a string representation of the block"""
-        return f"Block({id(self)}): {self.pos()} num={self.value}"
+        return f"Block({id(self)}): {self.pos} num={self.value}"
 
     def __str__(self) -> str:
         """Return a string representation of the block"""
@@ -108,6 +128,7 @@ class Block(pygame.sprite.Sprite):
         """Return a hash of the block"""
         return hash((self.rect.x, self.rect.y, self.value))
 
+    @property
     def pos(self) -> tuple[int, int]:
         """Return the position of the block"""
         return grid_pos(self.rect.x), grid_pos(self.rect.y)
