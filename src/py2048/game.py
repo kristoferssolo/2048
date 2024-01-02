@@ -36,7 +36,7 @@ class Game:
         """Render the game."""
         self.screen.fill(Config.COLORSCHEME.BG)
         self.board.draw(self.screen)
-        self.header.draw(self.screen, 0)
+        self.header.draw(self.screen, 2048)
         # self.menu.draw(self.screen)
         pygame.display.flip()
 

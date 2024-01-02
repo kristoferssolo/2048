@@ -1,34 +1,57 @@
 import pygame
-from attrs import define, field
+from loguru import logger
 
 from py2048 import Config
+from py2048.utils import Position, Size
+
+from .abc import UIElement
 
 
-@define
-class Label:
-    text: str
-    position: tuple[int, int]
-    bg_color: str
-    font_family: str
-    font_color: str
-    font_size: int
-    font: pygame.Font = field(init=False)
-    rendered_text: pygame.Surface = field(init=False)
-    rect: pygame.Rect = field(init=False)
+class Label(UIElement):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
-    def __attrs_post_init__(self):
-        self.font = pygame.font.SysFont(self.font_family, self.font_size)
-        self._draw_text()
+        self.image = self._create_surface()
+        self.rect = self.image.get_rect()
+        self.rect.topleft = self.position
 
     def draw(self, surface: pygame.Surface) -> None:
-        surface.blit(self.rendered_text, self.position)
-
-    def update(self, new_text: str) -> None:
-        self.text = new_text
+        """Draw the element on the given surface."""
+        # self._draw_background(surface)
         self._draw_text()
 
+    def update(self) -> None:
+        """Update the sprite."""
+        self._draw_background(self.image)
+        self._draw_text()
+        self.image.blit(self.rendered_text, self.position)
+
+    def _draw_background(self, surface: pygame.Surface) -> None:
+        """Draw a background for the given surface."""
+        rect = (0, 0, *self.size)
+        pygame.draw.rect(
+            surface, self.bg_color, rect, border_radius=Config.TILE.border.radius
+        )  # background
+        pygame.draw.rect(
+            surface,
+            (0, 0, 0, 0),
+            rect,
+            border_radius=Config.TILE.border.radius,
+            width=Config.TILE.border.width,
+        )  # border
+
     def _draw_text(self) -> None:
+        """Draw the text of the element."""
         self.rendered_text = self.font.render(
             self.text, True, self.font_color, self.bg_color
         )
-        self.rect = self.rendered_text.get_rect(topleft=self.position)
+        self.image.blit(
+            self.rendered_text,
+            self.rendered_text.get_rect(center=self.image.get_rect().center),
+        )
+
+    def _create_surface(self) -> pygame.Surface:
+        """Create a surface for the element."""
+        surface = pygame.Surface(self.size, pygame.SRCALPHA)
+        self._draw_background(surface)
+        return surface

@@ -16,6 +16,8 @@ class UIElement(ABC, metaclass=ABCMeta):
         position: Position,
         bg_color: str,
         font_color: str,
+        font_size: int = Config.FONT.size,
+        font_family: str = Config.FONT.family,
         size: Size = Size(50, 50),
         text: str = "",
         border_radius: int = 0,
@@ -30,11 +32,15 @@ class UIElement(ABC, metaclass=ABCMeta):
         self.border_width = border_width
         self.position = position
         self.x, self.y = self.position
-        self.font = pygame.font.SysFont(Config.FONT.family, Config.FONT.size)
+        self.font = pygame.font.SysFont(font_family, font_size)
 
     @abstractmethod
     def draw(self, surface: pygame.Surface) -> None:
-        """Draw the element on the given surface."""
+        """Draw the element."""
+
+    @abstractmethod
+    def update(self) -> None:
+        """Update the element."""
 
     @abstractmethod
     def _draw_background(self, surface: pygame.Surface) -> None:
