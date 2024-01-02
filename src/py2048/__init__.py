@@ -1,5 +1,4 @@
-from .color import ColorScheme
 from .config import Config
-from .utils import BASE_PATH, Direction
+from .game import Game
 
-__all__ = ["Direction", "ColorScheme", "Config", "BASE_PATH"]
+__all__ = ["Config", "Game"]

@@ -2,7 +2,7 @@
 
 
 from loguru import logger
-from py2048.game import Game
+from py2048 import Game
 
 
 @logger.catch

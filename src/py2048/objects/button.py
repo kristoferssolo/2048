@@ -1,47 +1,54 @@
 import sys
+from typing import Callable, Optional
 
 import pygame
 from attrs import define, field
 
-from py2048.color import ColorScheme
-from py2048.config import Config
+from py2048 import Config
+from py2048.utils import Direction, Position
+
+from .abc import ClickableUIElement, UIElement
 
 
-@define
-class Button(pygame.sprite.Sprite):
-    def __init__(self, text: str, x: int, y: int, group: pygame.sprite.Group):
-        super().__init__()
-        self.text = text
-        self.image = self._create_button_surface()
+class Button(UIElement, ClickableUIElement):
+    def __init__(
+        self,
+        /,
+        *,
+        hover_color: str,
+        action: Optional[Callable[[], None]] = None,
+        **kwargs,
+    ):
+        super().__init__(hover_color, action)
+        Static.__init__(self, **kwargs)
 
-    # text: str = field(kw_only=True)
-    # font_family: str = field(kw_only=True)
-    # font_size: int = field(kw_only=True)
-    # font_color: ColorScheme = field(kw_only=True)
-    # position: tuple[int, int] = field(kw_only=True)
-    # width: int = field(kw_only=True)
-    # height: int = field(kw_only=True)
-    # action = field(kw_only=True)
-    # bg_color: ColorScheme = field(kw_only=True)
-    # hover_color: ColorScheme = field(kw_only=True)
-    # font: pygame.Font = field(init=False)
-    # rendered_text: pygame.Surface = field(init=False)
-    # rect: pygame.Rect = field(init=False)
-    # is_hovered: bool = field(init=False, default=False)
+    def on_click(self) -> None:
+        pass
 
-    def __attrs_post_init__(self) -> None:
-        """Initialize the button."""
-        self.font = pygame.font.SysFont(self.font_family, self.font_size)
-        self._draw_text()
+    def on_hover(self) -> None:
+        pass
+
+    def _draw_background(self, surface: pygame.Surface) -> None:
+        """Draw a rectangle with borders on the given surface."""
+        pygame.draw.rect(
+            surface,
+            self.bg_color,
+            (*self.position, *self.size),
+            border_radius=self.border_radius,
+        )
 
     def _draw_text(self) -> None:
-        """Draw the text on the button."""
+        """Draw the text of the element."""
         self.rendered_text = self.font.render(
             self.text, True, self.font_color, self.bg_color
         )
-        self.rect = pygame.Rect(
-            self.position[0], self.position[1], self.width, self.height
-        )
+        self.rect = self.rendered_text.get_rect(topleft=self.position)
+
+    def _create_surface(self) -> pygame.Surface:
+        """Create a surface for the element."""
+        sprite_surface = pygame.Surface(self.size, pygame.SRCALPHA)
+        self._draw_background(sprite_surface)
+        return sprite_surface
 
     def check_hover(self, mouse_pos: tuple[int, int]) -> None:
         """Check if the mouse is hovering over the button."""
@@ -54,18 +61,18 @@ class Button(pygame.sprite.Sprite):
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the button on the given surface."""
-        if self.is_hovered:
-            self._draw_rect(surface, self.hover_color)
-        else:
-            self._draw_rect(surface, self.bg_color)
 
-        surface.blit(self.rendered_text, self.position)
+        self._draw_hover_background(
+            surface
+        ) if self.is_hovered else self._draw_background(surface)
 
-    def _draw_rect(self, surface: pygame.Surface, color: ColorScheme) -> None:
-        """Draw the button rectangle."""
+        surface.blit(self.rendered_text, self.rect.topleft)
+
+    def _draw_hover_background(self, surface: pygame.Surface) -> None:
+        """Draw the hover rectangle."""
         pygame.draw.rect(
             surface,
-            self.bg_color,
+            self.hover_color,
             self.rect,
-            border_radius=Config.TILE_BORDER_RADIUS,
+            border_radius=self.border_radius,
         )

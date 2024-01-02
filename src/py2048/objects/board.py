@@ -3,7 +3,8 @@ import random
 import pygame
 from loguru import logger
 
-from py2048 import Config, Direction
+from py2048 import Config
+from py2048.utils import Direction, Position
 
 from .tile import Tile
 
@@ -11,9 +12,9 @@ from .tile import Tile
 class Board(pygame.sprite.Group):
     def __init__(self):
         super().__init__()
-        self.rect = pygame.Rect(0, 0, Config.BOARD_WIDTH, Config.BOARD_HEIGHT)
-        self.rect.x = Config.BOARD_X
-        self.rect.y = Config.BOARD_Y
+        self.rect = pygame.Rect(0, 0, *Config.BOARD.size)
+        self.score: int = 0
+        self.rect.x, self.rect.y = Config.BOARD.pos
         self.initiate_game()
 
     def initiate_game(self) -> None:
@@ -22,7 +23,6 @@ class Board(pygame.sprite.Group):
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the board."""
-        tile: Tile
         self._draw_background(surface)
 
         super().draw(surface)
@@ -33,17 +33,17 @@ class Board(pygame.sprite.Group):
             surface,
             Config.COLORSCHEME.BOARD_BG,
             self.rect,
-            border_radius=Config.TILE_BORDER_RADIUS,
+            border_radius=Config.TILE.border.radius,
         )  # background
         pygame.draw.rect(
             surface,
             Config.COLORSCHEME.BOARD_BG,
             self.rect,
-            width=Config.TILE_BORDER_WIDTH,
-            border_radius=Config.TILE_BORDER_RADIUS,
+            width=Config.TILE.border.width,
+            border_radius=Config.TILE.border.radius,
         )  # border
 
-    def move(self, direction: Direction) -> int:
+    def move(self, direction: Direction) -> None:
         """Move the tiles in the specified direction."""
         score = 0
         tiles = self.sprites()
@@ -60,23 +60,22 @@ class Board(pygame.sprite.Group):
                 tiles.sort(key=lambda tile: tile.rect.x, reverse=True)
 
         for tile in tiles:
-            score += tile.move(direction)
+            tile.move(direction)
+            self.score += tile.value
 
         if not self._is_full():
             self.generate_random_tile()
 
-        return score
-
     def generate_initial_tiles(self) -> None:
         """Generate the initial tiles."""
-        self.generate_tile(Config.INITIAL_TILE_COUNT)
+        self.generate_tile(Config.TILE.initial_count)
 
-    def generate_tile(self, amount: int = 1, *pos: tuple[int, int]) -> None:
+    def generate_tile(self, amount: int = 1, *pos: Position) -> None:
         """Generate `amount` number of tiles or at the specified positions."""
         if pos:
             for coords in pos:
-                x, y = coords[0] * Config.TILE_SIZE, coords[1] * Config.TILE_SIZE
-                self.add(Tile(x, y, self))
+                x, y = coords.x * Config.TILE.size, coords.y * Config.TILE.size
+                self.add(Tile(Position(x, y), self))
             return
 
         for _ in range(amount):
@@ -86,9 +85,9 @@ class Board(pygame.sprite.Group):
         """Generate a tile with random coordinates aligned with the grid."""
         while True:
             # Generate random coordinates aligned with the grid
-            x = random.randint(0, 3) * Config.TILE_SIZE + Config.BOARD_X
-            y = random.randint(0, 3) * Config.TILE_SIZE + Config.BOARD_Y
-            tile = Tile(x, y, self)
+            x = random.randint(0, 3) * Config.TILE.size + Config.BOARD.pos.x
+            y = random.randint(0, 3) * Config.TILE.size + Config.BOARD.pos.y
+            tile = Tile(Position(x, y), self)
 
             colliding_tiles = pygame.sprite.spritecollide(
                 tile, self, False
@@ -100,7 +99,7 @@ class Board(pygame.sprite.Group):
 
     def _is_full(self) -> bool:
         """Check if the board is full."""
-        return len(self.sprites()) == Config.BOARD_SIZE**2
+        return len(self.sprites()) == Config.BOARD.len**2
 
     def _can_move(self) -> bool:
         """Check if any movement is possible on the board."""

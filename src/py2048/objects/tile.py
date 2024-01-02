@@ -2,102 +2,123 @@ import random
 from typing import Union
 
 import pygame
+from loguru import logger
 
-from py2048 import ColorScheme, Config, Direction
+from py2048 import Config
+from py2048.utils import ColorScheme, Direction, Position, Size
 
-from .sprite import Sprite
+from .abc import MovableUIElement, UIElement
 
 
 def _grid_pos(pos: int) -> int:
     """Return the position in the grid."""
-    return pos // Config.TILE_SIZE + 1
+    return pos // Config.TILE.size + 1
 
 
-class Tile(Sprite):
+class Tile(UIElement, MovableUIElement, pygame.sprite.Sprite):
     def __init__(
-        self, x: int, y: int, group: pygame.sprite.Group, value: int | None = 2
+        self,
+        position: Position,
+        group: pygame.sprite.Group,
     ):
-        super().__init__(x, y, group)
+        pygame.sprite.Sprite.__init__(self)
+        self.value = 2 if random.random() <= Config.TILE.value_probability else 4
 
-        self.value: int = (
-            value
-            if value is not None
-            else 2
-            if random.random() <= Config.TILE_VALUE_PROBABILITY
-            else 4
+        super().__init__(
+            position=position,
+            text=f"{self.value}",
+            bg_color=Config.COLORSCHEME.TILE_0,
+            font_color=Config.COLORSCHEME.DARK_TEXT,
+            size=Size(Config.TILE.size, Config.TILE.size),
+            border_radius=Config.TILE.border.radius,
+            border_width=Config.TILE.border.width,
         )
+        self.score: int = 0
+        self.group = group
+
         self.image = self._create_surface()
         self.rect = self.image.get_rect()
-        self.rect.topleft = x, y
-        self.font = pygame.font.SysFont(Config.FONT_FAMILY, Config.FONT_SIZE)
-        self.group = group
+        self.rect.topleft = self.position
         self.update()
+
+    def draw(self, surface: pygame.Surface) -> None:
+        """Draw the value of the tile."""
+        self._draw_background(surface)
+        self._draw_text()
+
+    def update(self) -> None:
+        """Update the sprite."""
+        self._draw_background(self.image)
+        self.text = f"{self.value}"
+        self._draw_text()
+        self.image.blit(self.image, (0, 0))
 
     def _draw_background(self, surface: pygame.Surface) -> None:
         """Draw a rounded rectangle with borders on the given surface."""
-        rect = (0, 0, Config.TILE_SIZE, Config.TILE_SIZE)
+        rect = (0, 0, *self.size)
         pygame.draw.rect(
-            surface, self._get_color(), rect, border_radius=Config.TILE_BORDER_RADIUS
+            surface, self._get_color(), rect, border_radius=Config.TILE.border.radius
         )  # background
         pygame.draw.rect(
             surface,
             (0, 0, 0, 0),
             rect,
-            border_radius=Config.TILE_BORDER_RADIUS,
-            width=Config.TILE_BORDER_WIDTH,
+            border_radius=Config.TILE.border.radius,
+            width=Config.TILE.border.width,
         )  # border
 
-    def _create_surface(self) -> pygame.Surface:
-        """Create a surface for the tile."""
-        sprite_surface = pygame.Surface(
-            (Config.TILE_SIZE, Config.TILE_SIZE), pygame.SRCALPHA
+    def _draw_text(self) -> None:
+        """Draw the text of the sprite."""
+        self.rendered_text = self.font.render(self.text, True, self.font_color)
+        self.image.blit(
+            self.rendered_text,
+            self.rendered_text.get_rect(center=self.image.get_rect().center),
         )
+
+    def _create_surface(self) -> pygame.Surface:
+        """Create a surface for the sprite."""
+        sprite_surface = pygame.Surface(self.size, pygame.SRCALPHA)
         self._draw_background(sprite_surface)
         return sprite_surface
 
-    def draw(self, surface: pygame.Surface) -> None:
-        """Draw the value of the tile."""
-        text = self.font.render(str(self.value), True, Config.COLORSCHEME.DARK_TEXT)
-        sprite_surface = self._create_surface()
-
-        sprite_center: tuple[int, int] = (Config.TILE_SIZE // 2, Config.TILE_SIZE // 2)
-
-        text_rect: pygame.Rect = text.get_rect(center=self.image.get_rect().center)
-        sprite_surface.blit(text, text_rect)
-
-        self.image.blit(sprite_surface, (0, 0))
-
-    def move(self, direction: Direction) -> int:
-        """Move the tile by `dx` and `dy`."""
-        score = 0
+    def move(self, direction: Direction) -> None:
+        """
+        Move the tile by `dx` and `dy`.
+        If the tile collides with another tile, it will merge with it if possible.
+        Before moving, reset the score of the tile.
+        """
         while True:
             new_x, new_y = self._calc_new_pos(direction)
 
             if self._is_out_if_bounds(new_x, new_y):
-                return score
+                return
 
             if self._has_collision(new_x, new_y):
                 collided_tile = self._get_collided_tile(new_x, new_y)
                 if collided_tile and self._can_merge(collided_tile):
-                    score += self._merge(collided_tile)
+                    self._merge(collided_tile)
                 else:
-                    return score
+                    return
 
             self.group.remove(self)
             self.rect.topleft = new_x, new_y
             self.group.add(self)
 
+    def get_score(self) -> int:
+        """Return the score of the tile."""
+        return self.score
+
     def _calc_new_pos(self, direction: Direction) -> tuple[int, int]:
         """Calculate the new position of the tile."""
-        dx, dy = direction * Config.TILE_SIZE
+        dx, dy = direction * Config.TILE.size
         return self.rect.x + dx, self.rect.y + dy
 
     def _is_out_if_bounds(self, x: int, y: int) -> bool:
         """Return whether the tile is out of bounds."""
-        board_left = Config.BOARD_X
-        board_right = Config.BOARD_X + Config.BOARD_WIDTH - Config.TILE_SIZE
-        board_top = Config.BOARD_Y
-        board_bottom = Config.BOARD_Y + Config.BOARD_HEIGHT - Config.TILE_SIZE
+        board_left = Config.BOARD.pos.x
+        board_right = Config.BOARD.pos.x + Config.BOARD.size.width - Config.TILE.size
+        board_top = Config.BOARD.pos.y
+        board_bottom = Config.BOARD.pos.y + Config.BOARD.size.height - Config.TILE.size
         return not (board_left <= x <= board_right and board_top <= y <= board_bottom)
 
     def _has_collision(self, x: int, y: int) -> bool:
@@ -120,18 +141,13 @@ class Tile(Sprite):
         """Check if the tile can merge with another tile."""
         return self.value == other.value
 
-    def _merge(self, other: "Tile") -> int:
+    def _merge(self, other: "Tile") -> None:
         """Merge the tile with another tile."""
         self.group.remove(other)
         self.group.remove(self)
         self.value += other.value
         self.update()
         self.group.add(self)
-        return self.value
-
-    def update(self) -> None:
-        """Update the sprite."""
-        self.draw()
 
     def can_move(self) -> bool:
         """Check if the tile can move"""
@@ -145,8 +161,8 @@ class Tile(Sprite):
                     return True
         return False
 
-    def _get_color(self) -> ColorScheme:
-        """Change the color of the tile based on its value"""
+    def _get_color(self) -> str:
+        """Change the color of the tile based on its value."""
         color_map = {
             2: Config.COLORSCHEME.TILE_2,
             4: Config.COLORSCHEME.TILE_4,
@@ -175,6 +191,6 @@ class Tile(Sprite):
         return hash((self.rect.x, self.rect.y, self.value))
 
     @property
-    def pos(self) -> tuple[int, int]:
+    def pos(self) -> Position:
         """Return the position of the tile."""
-        return _grid_pos(self.rect.x), _grid_pos(self.rect.y)
+        return Position(_grid_pos(self.rect.x), _grid_pos(self.rect.y))

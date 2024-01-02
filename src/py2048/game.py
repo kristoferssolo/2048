@@ -6,21 +6,20 @@ from loguru import logger
 from .config import Config
 from .objects import Board
 from .screens import Header, Menu
-from .utils import Direction, _setup_logger
+from .utils import Direction, setup_logger
 
 
 class Game:
     def __init__(self) -> None:
-        _setup_logger()
+        setup_logger()
         logger.info("Initializing game")
 
         pygame.init()
-        self.screen: pygame.Surface = pygame.display.set_mode(Config.SCREEN_SIZE)
+        self.screen: pygame.Surface = pygame.display.set_mode(Config.SCREEN.size)
         pygame.display.set_caption("2048")
         self.board = Board()
         self.header = Header()
-        self.menu = Menu()
-        self.score = 0
+        # self.menu = Menu()
 
     def run(self) -> None:
         """Run the game loop."""
@@ -36,9 +35,9 @@ class Game:
     def _render(self) -> None:
         """Render the game."""
         self.screen.fill(Config.COLORSCHEME.BG)
-        # self.board.draw(self.screen)
-        # self.header.draw(self.screen, self.score)
-        self.menu.draw(self.screen)
+        self.board.draw(self.screen)
+        self.header.draw(self.screen, 0)
+        # self.menu.draw(self.screen)
         pygame.display.flip()
 
     def _hande_events(self) -> None:
@@ -57,19 +56,19 @@ class Game:
                     self.move_down()
                 elif event.key == pygame.K_q:
                     self.exit()
-            self.menu._handle_events(event)
+            # self.menu._handle_events(event)
 
     def move_up(self) -> None:
-        self.score += self.board.move(Direction.UP)
+        self.board.move(Direction.UP)
 
     def move_down(self) -> None:
-        self.score += self.board.move(Direction.DOWN)
+        self.board.move(Direction.DOWN)
 
     def move_left(self) -> None:
-        self.score += self.board.move(Direction.LEFT)
+        self.board.move(Direction.LEFT)
 
     def move_right(self) -> None:
-        self.score += self.board.move(Direction.RIGHT)
+        self.board.move(Direction.RIGHT)
 
     def exit(self) -> None:
         """Exit the game."""

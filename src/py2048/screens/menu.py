@@ -3,6 +3,7 @@ from loguru import logger
 
 from py2048 import Config
 from py2048.objects import Button
+from py2048.utils import Position
 
 
 class Menu:
@@ -14,22 +15,21 @@ class Menu:
             "Exit": self.exit,
         }
         buttons_width, button_height = 120, 50
+
         self.buttons = [
             Button(
-                text=text,
-                font_family=Config.FONT_FAMILY,
-                font_size=Config.FONT_SIZE,
-                font_color=Config.COLORSCHEME.LIGHT_TEXT,
-                position=(
-                    Config.SCREEN_WIDTH / 2 - 50,
-                    Config.SCREEN_HEIGHT / (len(buttons_data) + 1) * index
-                    - button_height,
+                position=Position(
+                    Config.SCREEN.size.width / 2 - button_height // 2,
+                    Config.SCREEN.size.height / len(buttons_data) * index
+                    - button_height // 2,
                 ),
-                width=buttons_width,
-                height=button_height,
-                action=action,
                 bg_color=Config.COLORSCHEME.BOARD_BG,
+                font_color=Config.COLORSCHEME.LIGHT_TEXT,
                 hover_color=Config.COLORSCHEME.TILE_0,
+                size=(buttons_width, button_height),
+                text=text,
+                border_radius=Config.TILE.border.radius,
+                action=action,
             )
             for index, (text, action) in enumerate(buttons_data.items(), start=1)
         ]

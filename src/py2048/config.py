@@ -1,27 +1,12 @@
-from .color import ColorScheme
+from .utils import Board, ColorScheme, Font, Header, Position, Screen, Size, Tile
 
 
 class Config:
-    FONT_FAMILY = "Roboto"
-    FONT_SIZE = 32
+    FONT = Font()
+
     COLORSCHEME = ColorScheme.ORIGINAL.value
 
-    TILE_SIZE = 75
-    TILE_BORDER_WIDTH = TILE_SIZE // 20
-    TILE_BORDER_RADIUS = TILE_SIZE // 10
-    INITIAL_TILE_COUNT = 2
-    TILE_VALUE_PROBABILITY = 0.9
-
-    BOARD_SIZE = 4
-    BOARD_WIDTH = BOARD_SIZE * TILE_SIZE
-    BOARD_HEIGHT = BOARD_SIZE * TILE_SIZE
-
-    HEADER_WIDTH = BOARD_WIDTH + TILE_SIZE
-    HEADER_HEIGHT = TILE_SIZE
-
-    BOARD_X = TILE_SIZE // 2
-    BOARD_Y = HEADER_HEIGHT + TILE_SIZE // 2
-
-    SCREEN_WIDTH = HEADER_WIDTH
-    SCREEN_HEIGHT = BOARD_HEIGHT + TILE_SIZE + HEADER_HEIGHT
-    SCREEN_SIZE = SCREEN_WIDTH, SCREEN_HEIGHT
+    TILE = Tile()
+    BOARD = Board()
+    HEADER = Header()
+    SCREEN = Screen()
