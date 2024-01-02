@@ -12,7 +12,7 @@ class Label:
     font_family: str
     font_color: ColorScheme
     font_size: int
-    font: pygame.font.Font = field(init=False)
+    font: pygame.Font = field(init=False)
     rendered_text: pygame.Surface = field(init=False)
     rect: pygame.Rect = field(init=False)
 
@@ -30,5 +30,5 @@ class Label:
         self.text = new_text
         self._draw_text()
 
-    def draw(self, screen):
-        screen.blit(self.rendered_text, self.position)
+    def draw(self, surface: pygame.Surface) -> None:
+        surface.blit(self.rendered_text, self.position)

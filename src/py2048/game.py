@@ -7,6 +7,7 @@ from .board import Board
 from .config import Config
 from .logger import setup_logger
 from .screens.header import Header
+from .screens.menu import Menu
 from .utils import Direction
 
 
@@ -20,6 +21,7 @@ class Game:
         pygame.display.set_caption("2048")
         self.board = Board()
         self.header = Header()
+        self.menu = Menu()
         self.score = 0
 
     def run(self) -> None:
@@ -31,13 +33,14 @@ class Game:
 
     def _update(self) -> None:
         """Update the game."""
-        self.board.update()
+        # self.board.update()
 
     def _render(self) -> None:
         """Render the game."""
         self.screen.fill(Config.COLORSCHEME.BG)
-        self.board.draw(self.screen)
-        self.header.draw(self.screen, self.score)
+        # self.board.draw(self.screen)
+        # self.header.draw(self.screen, self.score)
+        self.menu.draw(self.screen)
         pygame.display.flip()
 
     def _hande_events(self) -> None:
@@ -56,6 +59,7 @@ class Game:
                     self.move_down()
                 elif event.key == pygame.K_q:
                     self.exit()
+            self.menu._handle_events(event)
 
     def move_up(self) -> None:
         self.score += self.board.move(Direction.UP)
