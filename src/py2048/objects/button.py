@@ -7,7 +7,7 @@ from attrs import define, field
 from py2048 import Config
 from py2048.utils import Direction, Position
 
-from .abc import ClickableUIElement, UIElement
+from .abc import ClickableUIElement
 
 
 class Button(ClickableUIElement, pygame.sprite.Sprite):
@@ -30,7 +30,6 @@ class Button(ClickableUIElement, pygame.sprite.Sprite):
         """Update the button."""
         self._draw_background(self.image)
         self._draw_text()
-        self.image.blit(self.image, (0, 0))
 
     def on_click(self, mouse_pos: Position) -> None:
         """Handle the click event."""
@@ -61,11 +60,9 @@ class Button(ClickableUIElement, pygame.sprite.Sprite):
 
     def _draw_text(self) -> None:
         """Draw the text of the element."""
-        self.rendered_text = self.font.render(self.text, True, self.font_color)
-        self.image.blit(
-            self.rendered_text,
-            self.rendered_text.get_rect(center=self.image.get_rect().center),
-        )
+        text = self.font.render(self.text, True, self.font_color)
+        rect = text.get_rect(center=self.image.get_rect().center)
+        self.image.blit(text, rect)
 
     def _create_surface(self) -> pygame.Surface:
         """Create a surface for the element."""

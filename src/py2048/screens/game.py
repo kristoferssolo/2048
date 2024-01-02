@@ -16,7 +16,7 @@ class Game:
     def draw(self, surface: pygame.Surface) -> None:
         surface.fill(Config.COLORSCHEME.BG)
         self.board.draw(surface)
-        self.header.draw(surface, 2048)
+        self.header.draw(surface)
         pygame.display.flip()
 
     def handle_events(self, event: pygame.Event) -> None:

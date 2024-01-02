@@ -1,7 +1,7 @@
 import pygame
 
 from py2048 import Config
-from py2048.objects import Label
+from py2048.objects import ScoreLabel
 from py2048.utils import Position, Size
 
 
@@ -11,29 +11,42 @@ class Header:
         self.labels = self._create_labels()
 
     def _create_labels(self) -> pygame.sprite.Group:
-        score = Label(
-            text=f"SCORE\n{0}",
-            size=Size(50, 50),
-            position=Position(0, 0),
+        size = Size(60, 40)
+
+        score = ScoreLabel(
+            value=0,
+            text="Score",
+            size=size,
+            position=Position(
+                Config.SCREEN.size.width - Config.TILE.size // 2 - size.width * 2 - 10,
+                10,
+            ),
             bg_color=Config.COLORSCHEME.BOARD_BG,
             font_color=Config.COLORSCHEME.LIGHT_TEXT,
             font_size=16,
+            border_radius=2,
         )
-        highscore = Label(
-            text=f"HIGHSCORE\n{2048}",
-            size=Size(50, 50),
-            position=Position(200, 0),
+        highscore = ScoreLabel(
+            value=2048,
+            text="Best",
+            size=size,
+            position=Position(
+                Config.SCREEN.size.width - Config.TILE.size // 2 - size.width, 10
+            ),
             bg_color=Config.COLORSCHEME.BOARD_BG,
             font_color=Config.COLORSCHEME.LIGHT_TEXT,
             font_size=16,
+            border_radius=2,
         )
+
         return pygame.sprite.Group(score, highscore)
 
-    def draw(self, screen: pygame.Surface, score: int) -> None:
+    def draw(self, surface: pygame.Surface) -> None:
         """Draw the header."""
-        self.labels.draw(screen)
+        self.labels.draw(surface)
 
     def update(self, score: int) -> None:
         """Update the header."""
-        # self.labels. = f"SCORE\n{score}"
-        self.labels.update()
+        for label in self.labels:
+            if label.text == "SCORE":
+                label.update_score(score)

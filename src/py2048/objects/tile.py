@@ -78,11 +78,9 @@ class Tile(MovableUIElement, pygame.sprite.Sprite):
 
     def _draw_text(self) -> None:
         """Draw the text of the sprite."""
-        self.rendered_text = self.font.render(self.text, True, self.font_color)
-        self.image.blit(
-            self.rendered_text,
-            self.rendered_text.get_rect(center=self.image.get_rect().center),
-        )
+        text = self.font.render(self.text, True, self.font_color)
+        rect = (text.get_rect(center=self.image.get_rect().center),)
+        self.image.blit(text, rect)
 
     def _create_surface(self) -> pygame.Surface:
         """Create a surface for the sprite."""
