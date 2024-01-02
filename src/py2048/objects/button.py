@@ -42,12 +42,13 @@ class Button(ClickableUIElement, pygame.sprite.Sprite):
 
     def _draw_background(self, surface: pygame.Surface) -> None:
         """Draw a rectangle on the given surface."""
-        pygame.draw.rect(
-            surface,
-            self.bg_color,
-            (0, 0, *self.size),
-            border_radius=Config.TILE.border.radius,
-        )
+        if self.size:
+            pygame.draw.rect(
+                surface,
+                self.bg_color,
+                (0, 0, *self.size),
+                border_radius=Config.TILE.border.radius,
+            )
 
     def _draw_hover_background(self, surface: pygame.Surface) -> None:
         """Draw the hover rectangle."""

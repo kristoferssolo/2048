@@ -18,7 +18,7 @@ class UIElement(ABC, metaclass=ABCMeta):
         font_color: str,
         font_size: int = Config.FONT.size,
         font_family: str = Config.FONT.family,
-        size: Size = Size(50, 50),
+        size: Optional[Size] = Size(50, 50),
         text: str = "",
         border_radius: int = 0,
         border_width: int = 0,

@@ -39,6 +39,7 @@ class Tile(MovableUIElement, pygame.sprite.Sprite):
         self.image = self._create_surface()
         self.rect = self.image.get_rect()
         self.rect.topleft = self.position
+        self.update()
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the value of the tile."""
@@ -55,23 +56,25 @@ class Tile(MovableUIElement, pygame.sprite.Sprite):
 
     def _draw_background(self, surface: pygame.Surface) -> None:
         """Draw a rounded rectangle on the given surface."""
-        pygame.draw.rect(
-            surface,
-            self._get_color(),
-            (0, 0, *self.size),
-            border_radius=Config.TILE.border.radius,
-        )
-        self._draw_border(surface)
+        if self.size:
+            pygame.draw.rect(
+                surface,
+                self._get_color(),
+                (0, 0, *self.size),
+                border_radius=Config.TILE.border.radius,
+            )
+            self._draw_border(surface)
 
     def _draw_border(self, surface: pygame.Surface) -> None:
         """Draw a rounded border on the given surface."""
-        pygame.draw.rect(
-            surface,
-            (0, 0, 0, 0),
-            (0, 0, *self.size),
-            border_radius=Config.TILE.border.radius,
-            width=Config.TILE.border.width,
-        )
+        if self.size:
+            pygame.draw.rect(
+                surface,
+                (0, 0, 0, 0),
+                (0, 0, *self.size),
+                border_radius=Config.TILE.border.radius,
+                width=Config.TILE.border.width,
+            )
 
     def _draw_text(self) -> None:
         """Draw the text of the sprite."""

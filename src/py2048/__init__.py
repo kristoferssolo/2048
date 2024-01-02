@@ -1,4 +1,4 @@
 from .config import Config
-from .game import Game
+from .screens import Menu
 
-__all__ = ["Config", "Game"]
+__all__ = ["Config", "Menu"]

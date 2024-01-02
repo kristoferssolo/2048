@@ -7,13 +7,15 @@ from py2048.utils import Position, Size
 from .abc import UIElement
 
 
-class Label(UIElement):
+class Label(UIElement, pygame.sprite.Sprite):
     def __init__(self, *args, **kwargs) -> None:
+        pygame.sprite.Sprite.__init__(self)
         super().__init__(*args, **kwargs)
 
         self.image = self._create_surface()
         self.rect = self.image.get_rect()
         self.rect.topleft = self.position
+        self.update()
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the element on the given surface."""
@@ -29,23 +31,17 @@ class Label(UIElement):
 
     def _draw_background(self, surface: pygame.Surface) -> None:
         """Draw a background for the given surface."""
-        rect = (0, 0, *self.size)
-        pygame.draw.rect(
-            surface, self.bg_color, rect, border_radius=Config.TILE.border.radius
-        )  # background
-        pygame.draw.rect(
-            surface,
-            (0, 0, 0, 0),
-            rect,
-            border_radius=Config.TILE.border.radius,
-            width=Config.TILE.border.width,
-        )  # border
+        if self.size:
+            pygame.draw.rect(
+                surface,
+                self.bg_color,
+                (0, 0, *self.size),
+                border_radius=Config.TILE.border.radius,
+            )
 
     def _draw_text(self) -> None:
         """Draw the text of the element."""
-        self.rendered_text = self.font.render(
-            self.text, True, self.font_color, self.bg_color
-        )
+        self.rendered_text = self.font.render(self.text, True, self.font_color)
         self.image.blit(
             self.rendered_text,
             self.rendered_text.get_rect(center=self.image.get_rect().center),
