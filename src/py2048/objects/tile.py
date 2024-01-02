@@ -15,7 +15,7 @@ def _grid_pos(pos: int) -> int:
     return pos // Config.TILE.size + 1
 
 
-class Tile(UIElement, MovableUIElement, pygame.sprite.Sprite):
+class Tile(MovableUIElement, pygame.sprite.Sprite):
     def __init__(
         self,
         position: Position,
@@ -39,12 +39,12 @@ class Tile(UIElement, MovableUIElement, pygame.sprite.Sprite):
         self.image = self._create_surface()
         self.rect = self.image.get_rect()
         self.rect.topleft = self.position
-        self.update()
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the value of the tile."""
         self._draw_background(surface)
         self._draw_text()
+        self.image.blit(self.image, (0, 0))
 
     def update(self) -> None:
         """Update the sprite."""
@@ -54,18 +54,24 @@ class Tile(UIElement, MovableUIElement, pygame.sprite.Sprite):
         self.image.blit(self.image, (0, 0))
 
     def _draw_background(self, surface: pygame.Surface) -> None:
-        """Draw a rounded rectangle with borders on the given surface."""
-        rect = (0, 0, *self.size)
+        """Draw a rounded rectangle on the given surface."""
         pygame.draw.rect(
-            surface, self._get_color(), rect, border_radius=Config.TILE.border.radius
-        )  # background
+            surface,
+            self._get_color(),
+            (0, 0, *self.size),
+            border_radius=Config.TILE.border.radius,
+        )
+        self._draw_border(surface)
+
+    def _draw_border(self, surface: pygame.Surface) -> None:
+        """Draw a rounded border on the given surface."""
         pygame.draw.rect(
             surface,
             (0, 0, 0, 0),
-            rect,
+            (0, 0, *self.size),
             border_radius=Config.TILE.border.radius,
             width=Config.TILE.border.width,
-        )  # border
+        )
 
     def _draw_text(self) -> None:
         """Draw the text of the sprite."""
@@ -77,9 +83,9 @@ class Tile(UIElement, MovableUIElement, pygame.sprite.Sprite):
 
     def _create_surface(self) -> pygame.Surface:
         """Create a surface for the sprite."""
-        sprite_surface = pygame.Surface(self.size, pygame.SRCALPHA)
-        self._draw_background(sprite_surface)
-        return sprite_surface
+        surface = pygame.Surface(self.size, pygame.SRCALPHA)
+        self._draw_background(surface)
+        return surface
 
     def move(self, direction: Direction) -> None:
         """

@@ -6,45 +6,44 @@ from py2048.objects import Button
 from py2048.utils import Position
 
 
-class Menu:
+class Menu(pygame.sprite.AbstractGroup):
     def __init__(self):
+        super().__init__()
+
         buttons_data = {
             "Play": self.play,
             "AI": self.ai,
             "Settings": self.settings,
             "Exit": self.exit,
         }
-        buttons_width, button_height = 120, 50
+        button_width, button_height = 120, 50
 
-        self.buttons = [
-            Button(
-                position=Position(
-                    Config.SCREEN.size.width / 2 - button_height // 2,
-                    Config.SCREEN.size.height / len(buttons_data) * index
-                    - button_height // 2,
-                ),
-                bg_color=Config.COLORSCHEME.BOARD_BG,
-                font_color=Config.COLORSCHEME.LIGHT_TEXT,
-                hover_color=Config.COLORSCHEME.TILE_0,
-                size=(buttons_width, button_height),
-                text=text,
-                border_radius=Config.TILE.border.radius,
-                action=action,
+        for index, (text, action) in enumerate(buttons_data.items(), start=1):
+            self.add(
+                Button(
+                    position=Position(
+                        Config.SCREEN.size.width / 2 - button_width / 2,
+                        Config.SCREEN.size.height / len(buttons_data) * index
+                        - button_height,
+                    ),
+                    bg_color=Config.COLORSCHEME.BOARD_BG,
+                    font_color=Config.COLORSCHEME.LIGHT_TEXT,
+                    hover_color=Config.COLORSCHEME.TILE_0,
+                    size=(button_width, button_height),
+                    text=text,
+                    border_radius=Config.TILE.border.radius,
+                    action=action,
+                )
             )
-            for index, (text, action) in enumerate(buttons_data.items(), start=1)
-        ]
 
     def _handle_events(self, event: pygame.event.Event) -> None:
-        if event.type == pygame.MOUSEMOTION:
-            for button in self.buttons:
-                button.check_hover(event.pos)
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            for button in self.buttons:
-                button.check_click(event.pos)
-
-    def draw(self, surface: pygame.Surface) -> None:
-        for button in self.buttons:
-            button.draw(surface)
+        """Handle the event."""
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for button in self.sprites():
+                button.on_click(Position(*event.pos))
+        elif event.type == pygame.MOUSEMOTION:
+            for button in self.sprites():
+                button.on_hover(Position(*event.pos))
 
     def play(self) -> None:
         logger.debug("Play")

@@ -4,8 +4,8 @@ from attr import Factory, define, field
 
 
 class Position(NamedTuple):
-    x: int
-    y: int
+    x: int | float
+    y: int | float
 
 
 class Size(NamedTuple):

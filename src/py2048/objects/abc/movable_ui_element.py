@@ -1,22 +1,19 @@
-from abc import ABC, ABCMeta, abstractmethod
+from abc import abstractmethod
 
 import pygame
 
 from py2048.utils import Direction, Position
 
+from .ui_element import UIElement
 
-class MovableUIElement(ABC, metaclass=ABCMeta):
+
+class MovableUIElement(UIElement):
+    def __init__(self, *args, **kwargs) -> None:
+        UIElement.__init__(self, *args, **kwargs)
+
     @abstractmethod
     def move(self, direction: Direction) -> None:
         """Move the element in the given direction."""
-
-    @abstractmethod
-    def update(self) -> None:
-        """Update the element."""
-
-    @abstractmethod
-    def __hash__(self) -> int:
-        """Return a hash of the sprite."""
 
     @property
     @abstractmethod

@@ -19,7 +19,7 @@ class Game:
         pygame.display.set_caption("2048")
         self.board = Board()
         self.header = Header()
-        # self.menu = Menu()
+        self.menu = Menu()
 
     def run(self) -> None:
         """Run the game loop."""
@@ -30,14 +30,14 @@ class Game:
 
     def _update(self) -> None:
         """Update the game."""
-        # self.board.update()
+        self.board.update()
 
     def _render(self) -> None:
         """Render the game."""
         self.screen.fill(Config.COLORSCHEME.BG)
-        self.board.draw(self.screen)
-        self.header.draw(self.screen, 2048)
-        # self.menu.draw(self.screen)
+        # self.board.draw(self.screen)
+        # self.header.draw(self.screen, 2048)
+        self.menu.draw(self.screen)
         pygame.display.flip()
 
     def _hande_events(self) -> None:
@@ -56,7 +56,7 @@ class Game:
                     self.move_down()
                 elif event.key == pygame.K_q:
                     self.exit()
-            # self.menu._handle_events(event)
+            self.menu._handle_events(event)
 
     def move_up(self) -> None:
         self.board.move(Direction.UP)
