@@ -15,16 +15,15 @@ class Board(pygame.sprite.Group):
         self.rect = pygame.Rect(0, 0, *Config.BOARD.size)
         self.score: int = 0
         self.rect.x, self.rect.y = Config.BOARD.pos
-        self.initiate_game()
+        self._initiate_game()
 
-    def initiate_game(self) -> None:
+    def _initiate_game(self) -> None:
         """Initiate the game."""
         self.generate_initial_tiles()
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the board."""
         self._draw_background(surface)
-
         super().draw(surface)
 
     def _draw_background(self, surface: pygame.Surface) -> None:
@@ -45,7 +44,6 @@ class Board(pygame.sprite.Group):
 
     def move(self, direction: Direction) -> None:
         """Move the tiles in the specified direction."""
-        score = 0
         tiles = self.sprites()
         tile: Tile
 
@@ -60,8 +58,7 @@ class Board(pygame.sprite.Group):
                 tiles.sort(key=lambda tile: tile.rect.x, reverse=True)
 
         for tile in tiles:
-            tile.move(direction)
-            self.score += tile.value
+            self.score += tile.move(direction)
 
         if not self._is_full():
             self.generate_random_tile()
@@ -116,4 +113,4 @@ class Board(pygame.sprite.Group):
     def reset(self) -> None:
         """Reset the board."""
         self.empty()
-        self.initiate_game()
+        self._initiate_game()

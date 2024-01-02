@@ -13,7 +13,7 @@ class Header:
     def _create_labels(self) -> pygame.sprite.Group:
         size = Size(60, 40)
 
-        score = ScoreLabel(
+        self.score = ScoreLabel(
             value=0,
             text="Score",
             size=size,
@@ -39,14 +39,12 @@ class Header:
             border_radius=2,
         )
 
-        return pygame.sprite.Group(score, highscore)
+        return pygame.sprite.Group(self.score, highscore)
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the header."""
         self.labels.draw(surface)
 
     def update(self, score: int) -> None:
-        """Update the header."""
-        for label in self.labels:
-            if label.text == "SCORE":
-                label.update_score(score)
+        """Update the score."""
+        self.score.update_score(score)

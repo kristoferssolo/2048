@@ -30,14 +30,18 @@ class Game:
             elif event.key in (pygame.K_DOWN, pygame.K_s, pygame.K_j):
                 self.move_down()
 
+    def move(self, direction: Direction) -> None:
+        self.board.move(direction)
+        self.header.update(self.board.score)
+
     def move_up(self) -> None:
-        self.board.move(Direction.UP)
+        self.move(Direction.UP)
 
     def move_down(self) -> None:
-        self.board.move(Direction.DOWN)
+        self.move(Direction.DOWN)
 
     def move_left(self) -> None:
-        self.board.move(Direction.LEFT)
+        self.move(Direction.LEFT)
 
     def move_right(self) -> None:
-        self.board.move(Direction.RIGHT)
+        self.move(Direction.RIGHT)

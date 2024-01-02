@@ -33,7 +33,6 @@ class Tile(MovableUIElement, pygame.sprite.Sprite):
             border_radius=Config.TILE.border.radius,
             border_width=Config.TILE.border.width,
         )
-        self.score: int = 0
         self.group = group
 
         self.image = self._create_surface()
@@ -88,32 +87,28 @@ class Tile(MovableUIElement, pygame.sprite.Sprite):
         self._draw_background(surface)
         return surface
 
-    def move(self, direction: Direction) -> None:
+    def move(self, direction: Direction) -> int:
         """
         Move the tile by `dx` and `dy`.
         If the tile collides with another tile, it will merge with it if possible.
-        Before moving, reset the score of the tile.
         """
+        score = 0
         while True:
             new_x, new_y = self._calc_new_pos(direction)
 
             if self._is_out_if_bounds(new_x, new_y):
-                return
+                return score
 
             if self._has_collision(new_x, new_y):
                 collided_tile = self._get_collided_tile(new_x, new_y)
                 if collided_tile and self._can_merge(collided_tile):
-                    self._merge(collided_tile)
+                    score += self._merge(collided_tile)
                 else:
-                    return
+                    return score
 
             self.group.remove(self)
             self.rect.topleft = new_x, new_y
             self.group.add(self)
-
-    def get_score(self) -> int:
-        """Return the score of the tile."""
-        return self.score
 
     def _calc_new_pos(self, direction: Direction) -> tuple[int, int]:
         """Calculate the new position of the tile."""
@@ -148,13 +143,14 @@ class Tile(MovableUIElement, pygame.sprite.Sprite):
         """Check if the tile can merge with another tile."""
         return self.value == other.value
 
-    def _merge(self, other: "Tile") -> None:
+    def _merge(self, other: "Tile") -> int:
         """Merge the tile with another tile."""
         self.group.remove(other)
         self.group.remove(self)
         self.value += other.value
         self.update()
         self.group.add(self)
+        return self.value
 
     def can_move(self) -> bool:
         """Check if the tile can move"""

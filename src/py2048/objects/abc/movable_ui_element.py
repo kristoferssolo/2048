@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Any
 
 import pygame
 
@@ -12,7 +13,7 @@ class MovableUIElement(UIElement):
         UIElement.__init__(self, *args, **kwargs)
 
     @abstractmethod
-    def move(self, direction: Direction) -> None:
+    def move(self, direction: Direction) -> Any:
         """Move the element in the given direction."""
 
     @property
