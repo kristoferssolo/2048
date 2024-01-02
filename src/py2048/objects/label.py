@@ -17,14 +17,15 @@ class Label(UIElement):
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the element on the given surface."""
-        # self._draw_background(surface)
+        self._draw_background(surface)
         self._draw_text()
+        self.image.blit(self.image, (0, 0))
 
     def update(self) -> None:
         """Update the sprite."""
         self._draw_background(self.image)
         self._draw_text()
-        self.image.blit(self.rendered_text, self.position)
+        self.image.blit(self.image, (0, 0))
 
     def _draw_background(self, surface: pygame.Surface) -> None:
         """Draw a background for the given surface."""
