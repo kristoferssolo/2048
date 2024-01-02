@@ -42,9 +42,8 @@ class Header:
         return pygame.sprite.Group(self.score, highscore)
 
     def draw(self, surface: pygame.Surface) -> None:
-        """Draw the header."""
         self.labels.draw(surface)
 
-    def update(self, score: int) -> None:
-        """Update the score."""
-        self.score.update_score(score)
+    def update(self, new_score: int) -> None:
+        """Updates the score to `new_score`."""
+        self.score.update_score(new_score)

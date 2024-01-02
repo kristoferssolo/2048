@@ -31,6 +31,7 @@ class Game:
                 self.move_down()
 
     def move(self, direction: Direction) -> None:
+        """Moved the board in the given direction and updates the score."""
         self.board.move(direction)
         self.header.update(self.board.score)
 
