@@ -1,7 +1,6 @@
 import pygame
-from py2048.config import Config
-
-from .elements.label import Label
+from py2048 import Config
+from py2048.objects import Label
 
 
 class Header:

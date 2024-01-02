@@ -3,17 +3,15 @@ import sys
 import pygame
 from loguru import logger
 
-from .board import Board
 from .config import Config
-from .logger import setup_logger
-from .screens.header import Header
-from .screens.menu import Menu
-from .utils import Direction
+from .objects import Board
+from .screens import Header, Menu
+from .utils import Direction, _setup_logger
 
 
 class Game:
     def __init__(self) -> None:
-        setup_logger()
+        _setup_logger()
         logger.info("Initializing game")
 
         pygame.init()

@@ -2,26 +2,32 @@ import sys
 
 import pygame
 from attrs import define, field
+
 from py2048.color import ColorScheme
 from py2048.config import Config
 
 
 @define
-class Button:
-    text: str = field()
-    font_family: str = field()
-    font_size: int = field()
-    font_color: ColorScheme = field()
-    position: tuple[int, int] = field()
-    width: int = field()
-    height: int = field()
-    action = field()
-    bg_color: ColorScheme = field()
-    hover_color: ColorScheme = field()
-    font: pygame.Font = field(init=False)
-    rendered_text: pygame.Surface = field(init=False)
-    rect: pygame.Rect = field(init=False)
-    is_hovered: bool = field(init=False, default=False)
+class Button(pygame.sprite.Sprite):
+    def __init__(self, text: str, x: int, y: int, group: pygame.sprite.Group):
+        super().__init__()
+        self.text = text
+        self.image = self._create_button_surface()
+
+    # text: str = field(kw_only=True)
+    # font_family: str = field(kw_only=True)
+    # font_size: int = field(kw_only=True)
+    # font_color: ColorScheme = field(kw_only=True)
+    # position: tuple[int, int] = field(kw_only=True)
+    # width: int = field(kw_only=True)
+    # height: int = field(kw_only=True)
+    # action = field(kw_only=True)
+    # bg_color: ColorScheme = field(kw_only=True)
+    # hover_color: ColorScheme = field(kw_only=True)
+    # font: pygame.Font = field(init=False)
+    # rendered_text: pygame.Surface = field(init=False)
+    # rect: pygame.Rect = field(init=False)
+    # is_hovered: bool = field(init=False, default=False)
 
     def __attrs_post_init__(self) -> None:
         """Initialize the button."""
@@ -57,4 +63,9 @@ class Button:
 
     def _draw_rect(self, surface: pygame.Surface, color: ColorScheme) -> None:
         """Draw the button rectangle."""
-        pygame.draw.rect(surface, self.bg_color, self.rect)
+        pygame.draw.rect(
+            surface,
+            self.bg_color,
+            self.rect,
+            border_radius=Config.TILE_BORDER_RADIUS,
+        )

@@ -1,11 +1,21 @@
 from enum import Enum
+from pathlib import Path
+
+from loguru import logger
 
 from .config import Config
 
+BASE_PATH = Path(__file__).resolve().parent.parent.parent
 
-def grid_pos(pos: int) -> int:
-    """Return the position in the grid."""
-    return pos // Config.BLOCK_SIZE + 1
+
+def _setup_logger() -> None:
+    logger.add(
+        BASE_PATH.joinpath(".logs", "game.log"),
+        format="{time} | {level} | {message}",
+        level="DEBUG" if BASE_PATH.joinpath("debug").exists() else "INFO",
+        rotation="1 MB",
+        compression="zip",
+    )
 
 
 class Direction(Enum):

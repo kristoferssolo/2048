@@ -3,9 +3,9 @@ import random
 import pygame
 from loguru import logger
 
-from .block import Block
-from .config import Config
-from .utils import Direction
+from py2048 import Config, Direction
+
+from .tile import Tile
 
 
 class Board(pygame.sprite.Group):
@@ -18,11 +18,11 @@ class Board(pygame.sprite.Group):
 
     def initiate_game(self) -> None:
         """Initiate the game."""
-        self.generate_initial_blocks()
+        self.generate_initial_tiles()
 
     def draw(self, surface: pygame.Surface) -> None:
         """Draw the board."""
-        block: Block
+        tile: Tile
         self._draw_background(surface)
 
         super().draw(surface)
@@ -33,69 +33,69 @@ class Board(pygame.sprite.Group):
             surface,
             Config.COLORSCHEME.BOARD_BG,
             self.rect,
-            border_radius=Config.BLOCK_BORDER_RADIUS,
+            border_radius=Config.TILE_BORDER_RADIUS,
         )  # background
         pygame.draw.rect(
             surface,
             Config.COLORSCHEME.BOARD_BG,
             self.rect,
-            width=Config.BLOCK_BORDER_WIDTH,
-            border_radius=Config.BLOCK_BORDER_RADIUS,
+            width=Config.TILE_BORDER_WIDTH,
+            border_radius=Config.TILE_BORDER_RADIUS,
         )  # border
 
     def move(self, direction: Direction) -> int:
-        """Move the blocks in the specified direction."""
+        """Move the tiles in the specified direction."""
         score = 0
-        blocks = self.sprites()
-        block: Block
+        tiles = self.sprites()
+        tile: Tile
 
         match direction:
             case Direction.UP:
-                blocks.sort(key=lambda block: block.rect.y)
+                tiles.sort(key=lambda tile: tile.rect.y)
             case Direction.DOWN:
-                blocks.sort(key=lambda block: block.rect.y, reverse=True)
+                tiles.sort(key=lambda tile: tile.rect.y, reverse=True)
             case Direction.LEFT:
-                blocks.sort(key=lambda block: block.rect.x)
+                tiles.sort(key=lambda tile: tile.rect.x)
             case Direction.RIGHT:
-                blocks.sort(key=lambda block: block.rect.x, reverse=True)
+                tiles.sort(key=lambda tile: tile.rect.x, reverse=True)
 
-        for block in blocks:
-            score += block.move(direction)
+        for tile in tiles:
+            score += tile.move(direction)
 
         if not self._is_full():
-            self.generate_random_block()
+            self.generate_random_tile()
 
         return score
 
-    def generate_initial_blocks(self) -> None:
-        """Generate the initial blocks."""
-        self.generate_block(Config.INITIAL_BLOCK_COUNT)
+    def generate_initial_tiles(self) -> None:
+        """Generate the initial tiles."""
+        self.generate_tile(Config.INITIAL_TILE_COUNT)
 
-    def generate_block(self, amount: int = 1, *pos: tuple[int, int]) -> None:
-        """Generate `amount` number of blocks or at the specified positions."""
+    def generate_tile(self, amount: int = 1, *pos: tuple[int, int]) -> None:
+        """Generate `amount` number of tiles or at the specified positions."""
         if pos:
             for coords in pos:
-                x, y = coords[0] * Config.BLOCK_SIZE, coords[1] * Config.BLOCK_SIZE
-                self.add(Block(x, y, self))
+                x, y = coords[0] * Config.TILE_SIZE, coords[1] * Config.TILE_SIZE
+                self.add(Tile(x, y, self))
             return
 
         for _ in range(amount):
-            self.generate_random_block()
+            self.generate_random_tile()
 
-    def generate_random_block(self) -> None:
-        """Generate a block with random coordinates aligned with the grid."""
+    def generate_random_tile(self) -> None:
+        """Generate a tile with random coordinates aligned with the grid."""
         while True:
             # Generate random coordinates aligned with the grid
-            x = random.randint(0, 3) * Config.BLOCK_SIZE + Config.BOARD_X
-            y = random.randint(0, 3) * Config.BLOCK_SIZE + Config.BOARD_Y
-            block = Block(x, y, self)
+            x = random.randint(0, 3) * Config.TILE_SIZE + Config.BOARD_X
+            y = random.randint(0, 3) * Config.TILE_SIZE + Config.BOARD_Y
+            tile = Tile(x, y, self)
 
-            colliding_blocks = pygame.sprite.spritecollide(
-                block, self, False
+            colliding_tiles = pygame.sprite.spritecollide(
+                tile, self, False
             )  # check for collisions
 
-            if not colliding_blocks:
-                self.add(block)
+            if not colliding_tiles:
+                self.add(tile)
                 return
 
     def _is_full(self) -> bool:
@@ -104,9 +104,9 @@ class Board(pygame.sprite.Group):
 
     def _can_move(self) -> bool:
         """Check if any movement is possible on the board."""
-        block: Block
-        for block in self.sprites():
-            if block.can_move():
+        tile: Tile
+        for tile in self.sprites():
+            if tile.can_move():
                 return True
         return False
 
