@@ -30,7 +30,7 @@ class Tile:
     size: int = 75
     border: Border = Border(size // 20, size // 10)
     initial_count: int = 2
-    value_probability: float = 0.9
+    probability: tuple[float, float] = 0.9, 0.1
 
 
 @define
