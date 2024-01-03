@@ -2,10 +2,8 @@
 
 import argparse
 
-from ai import train
 from loguru import logger
-from path import BASE_PATH
-from py2048 import Menu
+from utils import BASE_PATH
 
 
 def pos_int(string: str) -> int:
