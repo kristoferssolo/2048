@@ -9,5 +9,5 @@ log.add(
     level=Config.log_level.upper(),
     rotation="10 MB",
     compression="zip",
-    filter=lambda record: record["extra"]["name"] == "ai",
+    filter=lambda record: record["extra"].get("name") == "ai",
 )
