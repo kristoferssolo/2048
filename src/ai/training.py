@@ -1,6 +1,6 @@
 import neat
 from loguru import logger
-from path import BASE_PATH
+from utils import BASE_PATH
 
 from .config import get_config
 from .evaluation import eval_genomes

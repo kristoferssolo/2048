@@ -1,5 +1,5 @@
 import neat
-from path import BASE_PATH
+from utils import BASE_PATH
 
 
 def get_config() -> neat.Config:
