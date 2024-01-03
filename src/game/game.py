@@ -82,7 +82,13 @@ class Game2048:
         return moved, self.score
 
     def move_down(self) -> tuple[bool, int]:
-        pass
+        board = np.rot90(self.board, 1)
+        board, moved = self._move_and_merge(board)
+        self.board = np.rot90(board, -1)
+
+        if moved:
+            self.add_random_tile()
+        return moved, self.score
 
     def _move_and_merge(self, board: np.ndarray) -> tuple[np.ndarray, bool]:
         board, has_pushed = self._push_board_right(board)
@@ -106,7 +112,7 @@ class Game2048:
         print(f"Score: {self.score}")
         for row in self.board:
             for val in row:
-                print(f"{val:^3}", end="")
+                print(f"{val:^3}" if val != 0 else "   ", end="")
             print()
 
     def _push_board_right(self, board: np.ndarray) -> tuple[np.ndarray, bool]:
