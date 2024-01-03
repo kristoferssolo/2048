@@ -1,5 +1,6 @@
 import sys
 
+import neat
 import pygame
 from loguru import logger
 
@@ -61,6 +62,7 @@ class Menu:
 
     def run(self) -> None:
         """Run the game loop."""
+
         while True:
             self._hande_events()
 

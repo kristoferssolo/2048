@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
 
+from ai import train
 from loguru import logger
 from py2048 import Menu
 
 
 @logger.catch
 def main() -> None:
-    Menu().run()
+    # Menu().run()
+    train()
 
 
 if __name__ == "__main__":

@@ -10,9 +10,11 @@ from py2048.utils import ColorScheme, Direction, Position, Size
 from .abc import MovableUIElement, UIElement
 
 
-def _grid_pos(pos: int) -> int:
+def _grid_pos(position: Position) -> Position:
     """Return the position in the grid."""
-    return pos // Config.TILE.size + 1
+    x = (position.x - Config.BOARD.pos.x) // Config.TILE.size + 1
+    y = (position.y - Config.BOARD.pos.y) // Config.TILE.size + 1
+    return Position(x, y)
 
 
 class Tile(MovableUIElement, pygame.sprite.Sprite):
@@ -191,9 +193,9 @@ class Tile(MovableUIElement, pygame.sprite.Sprite):
 
     def __hash__(self) -> int:
         """Return a hash of the tile."""
-        return hash((self.rect.x, self.rect.y, self.value))
+        return hash((self.rect.x, self.rect.y))
 
     @property
     def pos(self) -> Position:
         """Return the position of the tile."""
-        return Position(_grid_pos(self.rect.x), _grid_pos(self.rect.y))
+        return _grid_pos(Position(*self.rect.topleft))

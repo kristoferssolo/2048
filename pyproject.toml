@@ -6,7 +6,12 @@ authors = [{ name = "Kristofers Solo", email = "dev@kristofers.xyz" }]
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "GPLv3" }
-dependencies = ["pygame-ce==2.3.2", "loguru==0.7.2", "attrs==23.1.0"]
+dependencies = [
+  "pygame-ce==2.3.2",
+  "loguru==0.7.2",
+  "attrs==23.1.0",
+  "neat-python>=0.92",
+]
 
 [tool.mypy]
 check_untyped_defs = true

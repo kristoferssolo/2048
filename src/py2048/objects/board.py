@@ -1,4 +1,5 @@
 import random
+from typing import Optional
 
 import pygame
 from loguru import logger
@@ -114,3 +115,25 @@ class Board(pygame.sprite.Group):
         """Reset the board."""
         self.empty()
         self._initiate_game()
+
+    def get_tile(self, position: Position) -> Optional[Tile]:
+        """Return the tile at the specified position."""
+        tile: Tile
+        for tile in self.sprites():
+            if tile.pos == position:
+                return tile
+        return None
+
+    def matrix(self) -> list[int]:
+        """Return a 1d matrix of values of the tiles."""
+        matrix: list[int] = []
+
+        for i in range(1, Config.BOARD.len + 1):
+            for j in range(1, Config.BOARD.len + 1):
+                tile = self.get_tile(Position(j, i))
+                if tile:
+                    matrix.append(tile.value)
+                else:
+                    matrix.append(0)
+
+        return matrix

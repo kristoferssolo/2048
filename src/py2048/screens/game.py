@@ -49,10 +49,6 @@ class Game:
             logger.info("Game over!")
             self.restart()
 
-    def restart(self) -> None:
-        self.board.reset()
-        self.update_score(0)
-
     def move_up(self) -> None:
         self.move(Direction.UP)
 
@@ -64,6 +60,11 @@ class Game:
 
     def move_right(self) -> None:
         self.move(Direction.RIGHT)
+
+    def restart(self) -> None:
+        self.board.reset()
+        self.board.score = 0
+        self.update_score(0)
 
     def _create_labels(self) -> pygame.sprite.Group:
         size = Size(60, 40)
