@@ -1,12 +1,9 @@
-from pathlib import Path
-
 from loguru import logger
+from path import BASE_PATH
 
 from .collections import Board, Font, Header, Position, Screen, Size, Tile
 from .color import ColorScheme
 from .enums import Direction
-
-BASE_PATH = Path(__file__).resolve().parent.parent.parent.parent
 
 
 def setup_logger() -> None:
@@ -20,7 +17,6 @@ def setup_logger() -> None:
 
 
 __all__ = [
-    "BASE_PATH",
     "Board",
     "ColorScheme",
     "Direction",
