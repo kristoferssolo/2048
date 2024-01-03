@@ -1,16 +1,18 @@
+import time
+
 import neat
 from loguru import logger
 from py2048 import Menu
 
 
 def eval_genomes(genomes, config: neat.Config):
+    app = Menu()
+    app.play()
+    app._game_active = False
     for genome_id, genome in genomes:
         genome.fitness = 0
-        app = Menu()
         net = neat.nn.FeedForwardNetwork.create(genome, config)
-
-        app.play()
-        app._game_active = False
+        start_time = time.perf_counter()
 
         while True:
             output = net.activate(
@@ -35,9 +37,14 @@ def eval_genomes(genomes, config: neat.Config):
             app.game.draw(app._surface)
             max_val = app.game.board.max_val()
 
-            if app.game.board._is_full() or max_val >= 2048:
+            time_passed = time.perf_counter() - start_time
+            if (
+                app.game.board.is_game_over()
+                or (app.game.board._is_full() and time_passed >= 0.1)
+                or max_val >= 2048
+            ):
                 calculate_fitness(genome, max_val)
-                logger.info(f"{max_val=}")
+                logger.info(f"{max_val=}\tscore={app.game.board.score}")
                 app.game.restart()
                 break
 
