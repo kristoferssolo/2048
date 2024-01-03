@@ -1,12 +1,8 @@
 #!/usr/bin/env python
-
 import argparse
 
-from game import play
-
-# from ai import train
 from loguru import logger
-from utils import BASE_PATH
+from utils import BASE_PATH, Config
 
 
 def pos_int(string: str) -> int:
@@ -60,34 +56,34 @@ group2.add_argument(
     help="Run app with GUI",
 )
 
-
-def setup_logger(debug_level: str) -> None:
-    logger.add(
-        BASE_PATH / ".logs" / "game.log",
-        format="{time} | {level} | {message}",
-        level=debug_level.upper(),
-        rotation="10 MB",
-        compression="zip",
-    )
+logger.add(
+    BASE_PATH / ".logs" / "2048.log",
+    format="{time} | {level} | {message}",
+    level="WARNING",
+    rotation="10 MB",
+    compression="zip",
+)
 
 
 @logger.catch
 def main(args: argparse.ArgumentParser) -> None:
     if args.debug:
-        setup_logger("debug")
+        Config.log_level = "debug"
     elif args.verbose:
-        setup_logger("debug")
-    else:
-        setup_logger("warning")
+        Config.log_level = "info"
+
+    import ai
+    import game
+    import gui
 
     if args.train is not None:
         # train(args.train)
-        logger.debug("Train")
+        ai.log.debug("Train")
     elif args.noui:
-        logger.debug("Run game in CLI")
-        play()
+        game.log.debug("Run game in CLI")
+        game.play()
     else:
-        logger.debug("Run app")
+        gui.log.debug("Run app")
         # play()
 
 

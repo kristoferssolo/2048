@@ -15,3 +15,5 @@ class Config:
     board = Board()
     header = Header()
     screen = Screen()
+
+    log_level = "warning"

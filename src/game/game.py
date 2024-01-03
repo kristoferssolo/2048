@@ -1,10 +1,12 @@
 import random
 
 import numpy as np
-from loguru import logger
 from utils import Config, Direction
 
+from .log import log
 
+
+@log.catch
 def play() -> None:
     game = Game2048()
 
