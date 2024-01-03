@@ -9,7 +9,7 @@ from py2048 import Menu
 @logger.catch
 def main() -> None:
     # Menu().run()
-    train()
+    train(100)
 
 
 if __name__ == "__main__":

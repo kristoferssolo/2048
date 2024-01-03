@@ -1,3 +1,4 @@
-from .train import train
+from .io import read_genome
+from .training import train
 
-__all__ = ["train"]
+__all__ = ["train", "read_genome"]

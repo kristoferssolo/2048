@@ -116,6 +116,11 @@ class Board(pygame.sprite.Group):
         self.empty()
         self._initiate_game()
 
+    def max_val(self) -> int:
+        """Return the maximum value of the tiles."""
+        tile: Tile
+        return int(max(tile.value for tile in self.sprites()))
+
     def get_tile(self, position: Position) -> Optional[Tile]:
         """Return the tile at the specified position."""
         tile: Tile
