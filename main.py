@@ -26,13 +26,15 @@ group.add_argument(
     action="store_true",
     help="Debug",
 )
+
 group.add_argument(
     "-v",
     "--verbose",
     action="store_true",
     help="Verbose",
 )
-group.add_argument(
+
+parser.add_argument(
     "-t",
     "--train",
     type=pos_int,
@@ -63,6 +65,7 @@ def main(args: argparse.ArgumentParser) -> None:
         setup_logger("warning")
 
     if args.train is not None:
+        logger.warning(args.train)
         train(args.train)
     else:
         Menu().run()
