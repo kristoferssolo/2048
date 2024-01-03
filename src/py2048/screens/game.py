@@ -46,9 +46,9 @@ class Game:
         """Moved the board in the given direction and updates the score."""
         self.board.move(direction)
         self.update_score(self.board.score)
-        if self.board.is_game_over():
-            logger.info("Game over!")
-            self.restart()
+        # if self.board.is_game_over():
+        #     logger.info(f"Game over! Score was {self.board.score}.")
+        #     self.restart()
 
     def move_up(self) -> None:
         self.move(Direction.UP)

@@ -11,12 +11,10 @@ def train(generations: int) -> None:
     """Train the AI for a given number of generations."""
     config = get_config()
     population = neat.Population(config)
-    population.add_reporter(neat.StdOutReporter(True))
-    stats = neat.StatisticsReporter()
-    population.add_reporter(stats)
-    population.add_reporter(neat.Checkpointer(1))
+
+    population.add_reporter(neat.Checkpointer(None))
 
     winner = population.run(eval_genomes, generations)
 
     logger.info(winner)
-    save_genome(winner, BASE_PATH / "best_genome")
+    save_genome(winner)

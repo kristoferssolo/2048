@@ -129,6 +129,13 @@ class Board(pygame.sprite.Group):
                 return tile
         return None
 
+    def get_tile_value(self, position: Position) -> int:
+        """Return the value of the tile at the specified position."""
+        tile = self.get_tile(position)
+        if tile:
+            return tile.value
+        return 0
+
     def matrix(self) -> list[int]:
         """Return a 1d matrix of values of the tiles."""
         matrix: list[int] = []

@@ -91,7 +91,7 @@ class Menu:
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     self.exit()
-            if self._game_active:
+            if self._game_active or self._ai_active:
                 self.game.handle_events(event)
 
     def play(self) -> None:
@@ -114,12 +114,7 @@ class Menu:
             3: self.game.move_right,
         }
 
-        output = self.network.activate(
-            (
-                *self.game.board.matrix(),
-                self.game.board.score,
-            )
-        )
+        output = self.network.activate((*self.game.board.matrix(),))
         decision = output.index(max(output))
 
         decisions[decision]()

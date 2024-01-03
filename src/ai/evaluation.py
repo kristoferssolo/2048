@@ -1,8 +1,11 @@
+import random
 import time
 
 import neat
 from loguru import logger
 from py2048 import Menu
+
+from .fitness import calculate_fitness
 
 
 def eval_genomes(genomes, config: neat.Config):
@@ -12,22 +15,17 @@ def eval_genomes(genomes, config: neat.Config):
     for genome_id, genome in genomes:
         genome.fitness = 0
         net = neat.nn.FeedForwardNetwork.create(genome, config)
-        start_time = time.perf_counter()
 
+        start_time = time.perf_counter()
         while True:
-            output = net.activate(
-                (
-                    *app.game.board.matrix(),
-                    app.game.board.score,
-                )
-            )
+            output = net.activate((*app.game.board.matrix(),))
 
             decision = output.index(max(output))
 
             decisions = {
-                0: app.game.move_up,
+                0: app.game.move_left,
                 1: app.game.move_down,
-                2: app.game.move_left,
+                2: app.game.move_up,
                 3: app.game.move_right,
             }
 
@@ -35,23 +33,15 @@ def eval_genomes(genomes, config: neat.Config):
 
             app._hande_events()
             app.game.draw(app._surface)
-            max_val = app.game.board.max_val()
 
             time_passed = time.perf_counter() - start_time
-            score = app.game.board.score
-            if max_val >= 32:
-                calculate_fitness(genome, max_val)
-                logger.info(f"{max_val=}\t{score=:_}\t{genome_id=}")
+
+            if app.game.board.is_game_over():
+                max_tile, score = calculate_fitness(genome, app)
+
+                logger.info(f"{max_tile=}\t{score=:_}\t{genome_id=}")
                 app.game.restart()
                 break
-            elif app.game.board.is_game_over() or (
-                app.game.board._is_full() and time_passed >= 0.1
-            ):
-                calculate_fitness(genome, -max_val)
-                logger.info(f"{max_val=}\t{score=:_}\t{genome_id=}")
-                app.game.restart()
-                break
-
-
-def calculate_fitness(genome: neat.DefaultGenome, score: int):
-    genome.fitness += score
+            elif app.game.board._is_full() and time_passed >= 0.1:
+                decisions[random.choice((0, 1, 2, 3))]()
+                max_tile, score = calculate_fitness(genome, app)
