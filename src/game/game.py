@@ -42,7 +42,20 @@ class Game2048:
             self.add_random_tile()
 
     def merge(self, row: np.ndarray) -> np.ndarray:
-        pass
+        row = row[row != 0]
+        merged_row = np.zeros_like(row)
+        j = 0
+        for i, _ in enumerate(row):
+            if i < len(row) - 1 and row[1] == row[i + 1]:
+                merged_row[j] = 2 * row[i]
+                j += 1
+            elif row[i] != 0:
+                merged_row[j] = row[i]
+                j += 1
+
+        return np.concatenate(
+            (merged_row, np.zeros(self.size - len(merged_row))), axis=0
+        )[: self.size]
 
     def display(self) -> None:
         for row in self.board:
