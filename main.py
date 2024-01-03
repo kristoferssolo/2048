@@ -2,6 +2,7 @@
 
 import argparse
 
+# from ai import train
 from loguru import logger
 from utils import BASE_PATH
 
@@ -32,7 +33,9 @@ group.add_argument(
     help="Verbose",
 )
 
-parser.add_argument(
+group2 = parser.add_mutually_exclusive_group()
+
+group2.add_argument(
     "-t",
     "--train",
     type=pos_int,
@@ -40,6 +43,19 @@ parser.add_argument(
     const=100,
     metavar="int",
     help="Trains the AI",
+)
+group2.add_argument(
+    "-n",
+    "--noui",
+    action="store_true",
+    help="Run app in the CLI",
+)
+
+group2.add_argument(
+    "-g",
+    "--graphic",
+    action="store_true",
+    help="Run app with GUI",
 )
 
 
@@ -63,10 +79,12 @@ def main(args: argparse.ArgumentParser) -> None:
         setup_logger("warning")
 
     if args.train is not None:
-        logger.warning(args.train)
-        train(args.train)
+        # train(args.train)
+        logger.debug("Train")
+    elif args.noui:
+        logger.debug("Run game in CLI")
     else:
-        Menu().run()
+        logger.debug("Run app")
 
 
 if __name__ == "__main__":
