@@ -78,13 +78,13 @@ def main(args: argparse.ArgumentParser) -> None:
 
     if args.train is not None:
         # train(args.train)
-        ai.log.debug("Train")
+        ai.log.debug("Training the AI")
     elif args.noui:
-        game.log.debug("Run game in CLI")
+        game.log.debug("Running the game in CLI")
         game.play()
     else:
-        gui.log.debug("Run app")
-        # play()
+        gui.log.debug("Running the game in GUI")
+        gui.launch()
 
 
 if __name__ == "__main__":
