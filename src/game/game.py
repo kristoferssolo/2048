@@ -45,57 +45,62 @@ class Game2048:
         tile_loc = np.random.randint(0, len(tile_row_options))
         self.board[tile_row_options[tile_loc], tile_col_options[tile_loc]] = tile_value
 
-    def move(self, direction: Direction) -> None:
+    def move(self, direction: Direction) -> tuple[bool, int]:
         match direction:
             case Direction.LEFT:
-                self.move_left()
+                return self.move_left()
             case Direction.RIGHT:
-                self.move_right()
+                return self.move_right()
             case Direction.UP:
-                self.move_up()
+                return self.move_up()
             case Direction.DOWN:
-                self.move_down()
+                return self.move_down()
 
     def move_right(self) -> tuple[bool, int]:
-        self.board, has_pushed = self._push_board_right()
-        has_merged = self.merge()
-        self.board, _ = self._push_board_right()
-        move_made = has_pushed or has_merged
-        if move_made:
+        self.board, moved = self._move_and_merge(self.board)
+
+        if moved:
             self.add_random_tile()
-        return move_made, self.score
+        return moved, self.score
 
     def move_left(self) -> tuple[bool, int]:
-        self.board = np.rot90(self.board, 2)
-        self.board, has_pushed = self._push_board_right()
-        has_merged = self.merge()
-        self.board, _ = self._push_board_right()
-        self.board = np.rot90(self.board, 2)
-        move_made = has_pushed or has_merged
-        if move_made:
+        board = np.rot90(self.board, 2)
+        board, moved = self._move_and_merge(board)
+        self.board = np.rot90(board, 2)
+
+        if moved:
             self.add_random_tile()
-        return move_made, self.score
+        return moved, self.score
 
-    def move_up(self) -> None:
+    def move_up(self) -> tuple[bool, int]:
+        board = np.rot90(self.board, -1)
+        board, moved = self._move_and_merge(board)
+        self.board = np.rot90(board, 1)
+
+        if moved:
+            self.add_random_tile()
+        return moved, self.score
+
+    def move_down(self) -> tuple[bool, int]:
         pass
 
-    def move_down(self) -> None:
-        pass
+    def _move_and_merge(self, board: np.ndarray) -> tuple[np.ndarray, bool]:
+        board, has_pushed = self._push_board_right(board)
+        board, has_merged = self._merge(board)
+        board, _ = self._push_board_right(board)
+        return board, has_pushed or has_merged
 
-    def merge(self) -> bool:
+    def _merge(self, board: np.ndarray) -> tuple[np.ndarray, bool]:
         done = False
         for row in range(self.size):
             for col in range(self.size - 1, 0, -1):
-                if (
-                    self.board[row, col] == self.board[row, col - 1]
-                    and self.board[row, col] != 0
-                ):
-                    self.board[row, col] *= 2
-                    self.score += self.board[row, col]
-                    self.board[row, col - 1] = 0
+                if board[row, col] == board[row, col - 1] and board[row, col] != 0:
+                    board[row, col] *= 2
+                    self.score += board[row, col]
+                    board[row, col - 1] = 0
                     done = True
 
-        return done
+        return board, done
 
     def display(self) -> None:
         print(f"Score: {self.score}")
@@ -104,15 +109,15 @@ class Game2048:
                 print(f"{val:^3}", end="")
             print()
 
-    def _push_board_right(self) -> tuple[np.ndarray, bool]:
-        new = np.zeros((self.size, self.size), dtype=int)
+    def _push_board_right(self, board: np.ndarray) -> tuple[np.ndarray, bool]:
+        new_board = np.zeros((self.size, self.size), dtype=int)
         done = False
         for row in range(self.size):
             count = self.size - 1
             for col in range(self.size - 1, -1, -1):
-                if self.board[row, col] != 0:
-                    new[row, count] = self.board[row, col]
+                if board[row, col] != 0:
+                    new_board[row, count] = board[row, col]
                     if col != count:
                         done = True
                     count -= 1
-        return new, done
+        return new_board, done
