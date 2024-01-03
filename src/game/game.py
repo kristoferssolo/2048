@@ -24,7 +24,22 @@ class Game2048:
             )[0]
 
     def move(self, direction: Direction) -> None:
-        pass
+        tmp_board = np.copy(self.board)
+
+        match direction:
+            case Direction.LEFT:
+                self.board = np.apply_along_axis(self.merge, 1, self.board)
+            case Direction.RIGHT:
+                self.board = np.apply_along_axis(self.merge, 1, self.board)
+                self.board = np.flip(self.board, axis=1)
+            case Direction.UP:
+                self.board = np.apply_along_axis(self.merge, 0, self.board)
+            case Direction.DOWN:
+                self.board = np.apply_along_axis(self.merge, 0, self.board)
+                self.board = np.flip(self.board, axis=0)
+
+        if not np.array_equal(self.board, tmp_board):
+            self.add_random_tile()
 
     def merge(self, row: np.ndarray) -> np.ndarray:
         pass
