@@ -3,7 +3,7 @@ from loguru import logger
 
 from py2048 import Config
 from py2048.objects import Board, Button, ScoreLabel
-from py2048.utils import Direction, Position, Size, setup_logger
+from py2048.utils import Direction, Position, Size
 
 
 class Game:

@@ -6,14 +6,13 @@ from loguru import logger
 
 from py2048 import Config
 from py2048.objects import Button
-from py2048.utils import Position, setup_logger
+from py2048.utils import Position
 
 from .game import Game
 
 
 class Menu:
     def __init__(self):
-        setup_logger()
         pygame.init()
         pygame.display.set_caption("2048")
         self._surface: pygame.Surface = pygame.display.set_mode(Config.SCREEN.size)
