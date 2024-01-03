@@ -2,6 +2,8 @@
 
 import argparse
 
+from game import Game2048
+
 # from ai import train
 from loguru import logger
 from utils import BASE_PATH
@@ -85,6 +87,8 @@ def main(args: argparse.ArgumentParser) -> None:
         logger.debug("Run game in CLI")
     else:
         logger.debug("Run app")
+        game = Game2048()
+        game.display()
 
 
 if __name__ == "__main__":
