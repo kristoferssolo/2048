@@ -95,3 +95,16 @@ class Game2048:
             for val in row:
                 print(f"{val:^3}", end="")
             print()
+
+    def _push_board_right(self) -> tuple[np.ndarray, bool]:
+        new = np.zeros((self.size, self.size), dtype=int)
+        done = False
+        for row in range(self.size):
+            count = self.size - 1
+            for col in range(self.size - 1, -1, -1):
+                if self.board[row, col] != 0:
+                    new[row, count] = self.board[row, col]
+                    if col != count:
+                        done = True
+                    count -= 1
+        return new, done
