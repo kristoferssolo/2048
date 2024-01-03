@@ -1,5 +1,5 @@
-pygame-ce>=2.3.2
 loguru>=0.7.2
 attrs>=23.1.0
 neat-python>=0.92
+numpy>=1.26.2
 .
