@@ -1,6 +1,6 @@
 [project]
 name = "2048"
-version = "0.1.0"
+version = "0.0.5"
 description = "2048 game with AI"
 authors = [{ name = "Kristofers Solo", email = "dev@kristofers.xyz" }]
 readme = "README.md"
