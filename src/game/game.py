@@ -74,7 +74,7 @@ class Game2048:
     def move_down(self) -> None:
         pass
 
-    def merge(self, row: np.ndarray) -> bool:
+    def merge(self) -> bool:
         done = False
         for row in range(self.size):
             for col in range(self.size - 1, 0, -1):
@@ -90,6 +90,7 @@ class Game2048:
         return done
 
     def display(self) -> None:
+        print(f"Score: {self.score}")
         for row in self.board:
             for val in row:
                 print(f"{val:^3}", end="")
