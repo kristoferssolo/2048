@@ -40,12 +40,10 @@ class Game2048:
 
     def add_random_tile(self) -> None:
         """Add a random tile to the board."""
-        empty_cells: np.ndarray = np.argwhere(self.board == 0)
-        if empty_cells.shape[0] > 0:
-            row, col = random.choice(empty_cells)
-            self.board[row, col] = random.choices(
-                [2, 4], weights=Config.tile.probability
-            )[0]
+        tile_value = random.choices([2, 4], weights=Config.tile.probability)[0]
+        tile_row_options, tile_col_options = np.nonzero(np.logical_not(self.board))
+        tile_loc = np.random.randint(0, len(tile_row_options))
+        self.board[tile_row_options[tile_loc], tile_col_options[tile_loc]] = tile_value
 
     def move(self, direction: Direction) -> None:
         tmp_board = np.copy(self.board)
