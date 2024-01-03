@@ -1,3 +1,3 @@
-from .game import Game2048
+from .game import Game2048, play
 
-__all__ = ["Game2048"]
+__all__ = ["Game2048", "play"]

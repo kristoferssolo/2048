@@ -5,6 +5,30 @@ from loguru import logger
 from utils import Config, Direction
 
 
+def play() -> None:
+    game = Game2048()
+
+    while True:
+        game.display()
+        move = input("Enter direction: ")
+        moves = {
+            "w": Direction.UP,
+            "a": Direction.LEFT,
+            "s": Direction.DOWN,
+            "d": Direction.RIGHT,
+        }
+
+        if move == "q":
+            break
+
+        direction = moves.get(move, None)
+
+        if direction:
+            game.move(direction)
+
+    game.display()
+
+
 class Game2048:
     def __init__(self, size: int = 4):
         self.size = size
