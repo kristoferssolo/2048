@@ -65,21 +65,20 @@ class Game2048:
         if not np.array_equal(self.board, tmp_board):
             self.add_random_tile()
 
-    def merge(self, row: np.ndarray) -> np.ndarray:
-        row = row[row != 0]
-        merged_row = np.zeros_like(row)
-        j = 0
-        for i, _ in enumerate(row):
-            if i < len(row) - 1 and row[1] == row[i + 1]:
-                merged_row[j] = 2 * row[i]
-                j += 1
-            elif row[i] != 0:
-                merged_row[j] = row[i]
-                j += 1
+    def merge(self, row: np.ndarray) -> bool:
+        done = False
+        for row in range(self.size):
+            for col in range(self.size - 1, 0, -1):
+                if (
+                    self.board[row, col] == self.board[row, col - 1]
+                    and self.board[row, col] != 0
+                ):
+                    self.board[row, col] *= 2
+                    self.score += self.board[row, col]
+                    self.board[row, col - 1] = 0
+                    done = True
 
-        return np.concatenate(
-            (merged_row, np.zeros(self.size - len(merged_row))), axis=0
-        )[: self.size]
+        return done
 
     def display(self) -> None:
         for row in self.board:
