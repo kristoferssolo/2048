@@ -59,8 +59,14 @@ class Game2048:
     def move_left(self) -> None:
         pass
 
-    def move_right(self) -> None:
-        pass
+    def move_right(self) -> tuple[bool, int]:
+        self.board, has_pushed = self._push_board_right()
+        has_merged = self.merge()
+        self.board, _ = self._push_board_right()
+        move_made = has_pushed or has_merged
+        if move_made:
+            self.add_random_tile()
+        return move_made, self.score
 
     def move_up(self) -> None:
         pass
