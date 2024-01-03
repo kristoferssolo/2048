@@ -1,7 +1,7 @@
 import random
 
 import numpy as np
-from utils import Config
+from utils import Config, Direction
 
 
 class Game2048:
@@ -21,3 +21,12 @@ class Game2048:
             self.board[row, col] = random.choices(
                 [2, 4], weights=Config.tile.probability
             )[0]
+
+    def move(self, direction: Direction) -> None:
+        pass
+
+    def merge(self, row: np.ndarray) -> np.ndarray:
+        pass
+
+    def display(self) -> None:
+        pass
