@@ -1,3 +1,4 @@
+import neat
 import pygame
 from loguru import logger
 

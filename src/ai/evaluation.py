@@ -39,12 +39,15 @@ def eval_genomes(genomes, config: neat.Config):
 
             time_passed = time.perf_counter() - start_time
             score = app.game.board.score
-            if (
-                app.game.board.is_game_over()
-                or (app.game.board._is_full() and time_passed >= 0.1)
-                or max_val >= 2048
-            ):
+            if max_val >= 32:
                 calculate_fitness(genome, max_val)
+                logger.info(f"{max_val=}\t{score=:_}\t{genome_id=}")
+                app.game.restart()
+                break
+            elif app.game.board.is_game_over() or (
+                app.game.board._is_full() and time_passed >= 0.1
+            ):
+                calculate_fitness(genome, -max_val)
                 logger.info(f"{max_val=}\t{score=:_}\t{genome_id=}")
                 app.game.restart()
                 break

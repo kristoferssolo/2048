@@ -1,7 +1,9 @@
 import sys
+from pathlib import Path
 
 import neat
 import pygame
+from ai import get_config, read_genome
 from loguru import logger
 
 from py2048 import Config
@@ -68,7 +70,8 @@ class Menu:
             if self._game_active:
                 self.game.draw(self._surface)
             elif self._ai_active:
-                pass
+                self._ai_move()
+                self.game.draw(self._surface)
             elif self._setting_active:
                 pass
             else:
@@ -98,6 +101,28 @@ class Menu:
 
     def ai(self) -> None:
         logger.debug("AI")
+
+        self._ai_active = True
+        self.game = Game()
+        self.network = neat.nn.FeedForwardNetwork.create(read_genome(), get_config())
+
+    def _ai_move(self) -> None:
+        decisions = {
+            0: self.game.move_up,
+            1: self.game.move_down,
+            2: self.game.move_left,
+            3: self.game.move_right,
+        }
+
+        output = self.network.activate(
+            (
+                *self.game.board.matrix(),
+                self.game.board.score,
+            )
+        )
+        decision = output.index(max(output))
+
+        decisions[decision]()
 
     def settings(self) -> None:
         logger.debug("Settings")
