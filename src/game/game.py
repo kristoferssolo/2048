@@ -12,10 +12,10 @@ def play() -> None:
         game.display()
         move = input("Enter direction: ")
         moves = {
-            "w": Direction.UP,
-            "a": Direction.LEFT,
-            "s": Direction.DOWN,
-            "d": Direction.RIGHT,
+            "w": game.move_up,
+            "a": game.move_left,
+            "s": game.move_down,
+            "d": game.move_right,
         }
 
         if move == "q":
@@ -24,7 +24,7 @@ def play() -> None:
         direction = moves.get(move, None)
 
         if direction:
-            game.move(direction)
+            direction()
 
     game.display()
 
@@ -46,22 +46,27 @@ class Game2048:
         self.board[tile_row_options[tile_loc], tile_col_options[tile_loc]] = tile_value
 
     def move(self, direction: Direction) -> None:
-        tmp_board = np.copy(self.board)
-
         match direction:
             case Direction.LEFT:
-                self.board = np.apply_along_axis(self.merge, 1, self.board)
+                self.move_left()
             case Direction.RIGHT:
-                self.board = np.apply_along_axis(self.merge, 1, self.board)
-                self.board = np.flip(self.board, axis=1)
+                self.move_right()
             case Direction.UP:
-                self.board = np.apply_along_axis(self.merge, 0, self.board)
+                self.move_up()
             case Direction.DOWN:
-                self.board = np.apply_along_axis(self.merge, 0, self.board)
-                self.board = np.flip(self.board, axis=0)
+                self.move_down()
 
-        if not np.array_equal(self.board, tmp_board):
-            self.add_random_tile()
+    def move_left(self) -> None:
+        pass
+
+    def move_right(self) -> None:
+        pass
+
+    def move_up(self) -> None:
+        pass
+
+    def move_down(self) -> None:
+        pass
 
     def merge(self, row: np.ndarray) -> bool:
         done = False
